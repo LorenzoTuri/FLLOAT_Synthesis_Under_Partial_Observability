@@ -1,0 +1,3 @@
+#FLLOAT Synthesis under partial observability
+
+This code uses FLLOAT library to compute the synthesis of DFA games with partial observability starting LTLf/LDLf formulas.
