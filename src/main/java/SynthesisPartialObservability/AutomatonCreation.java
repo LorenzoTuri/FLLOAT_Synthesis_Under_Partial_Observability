@@ -9,6 +9,7 @@ import FLLOAT.formula.ltlf.LTLfFormula;
 import FLLOAT.utils.AutomatonUtils;
 import FLLOAT.visitors.LDLfVisitors.LDLfVisitor;
 import FLLOAT.visitors.LTLfVisitors.LTLfVisitor;
+import SynthesisPartialObservability.Utility.Utility;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -53,11 +54,13 @@ public class AutomatonCreation {
         automaton = new Reducer<>().transform(automaton);
 
 
-
-
+        if (printing) {
+            Utility.print(automaton,"ltlfAutomaton.gv");
+        }
 
         return automaton;
     }
+
 
     public Automaton getAutomatonLDLf(){
         LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
@@ -69,6 +72,10 @@ public class AutomatonCreation {
 
         Automaton automaton = AutomatonUtils.ldlf2Automaton(formula, formula.getSignature());
         automaton = new Reducer<>().transform(automaton);
+
+        if (printing) {
+            Utility.print(automaton,"ltlfAutomaton.gv");
+        }
 
         return automaton;
     }

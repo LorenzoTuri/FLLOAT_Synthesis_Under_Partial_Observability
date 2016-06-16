@@ -2,6 +2,8 @@ package SynthesisPartialObservability.Utility;
 
 import FLLOAT.automaton.EmptyTrace;
 import FLLOAT.automaton.PossibleWorldWrap;
+import FLLOAT.automaton.TransitionLabel;
+import FLLOAT.utils.AutomatonUtils;
 import net.sf.tweety.logics.pl.semantics.PossibleWorld;
 import net.sf.tweety.logics.pl.syntax.Proposition;
 import rationals.Automaton;
@@ -9,6 +11,9 @@ import rationals.State;
 import rationals.Transition;
 import rationals.transformations.ToDFA;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -57,17 +62,16 @@ public class Utility {
         return result;
     }
 
-    private static PossibleWorldWrap updateLabel(Transition transition,Domain domain){
-        PossibleWorldWrap result = new PossibleWorldWrap();
-
+    private static TransitionLabel updateLabel(Transition transition, Domain domain){
+        TransitionLabel result = null;
         if (transition.label() instanceof EmptyTrace){
-            result.add(new Proposition("EmptyTr"));
+            result = new EmptyTrace();
 
         }else if (transition.label() instanceof PossibleWorld){
+            result = new PossibleWorldWrap();
             PossibleWorld pw = (PossibleWorld) transition.label();
-            while (pw.iterator().hasNext()) result.add(pw.iterator().next());
-            result.retainAll(domain.getDomain());
-
+            pw.retainAll(domain.getDomain());
+            result = (TransitionLabel) pw;
         }else return null;
 
         return result;
@@ -75,11 +79,14 @@ public class Utility {
 
     public static Automaton negateAutomaton(Automaton automaton){
         Set<State> terminals = automaton.terminals();
-        Set<State> states = new HashSet<>();
-        for (Object state:automaton.states()) states.add((State) state);
-        states.retainAll(terminals);
+        Set<State> negatedTerminals = new HashSet<>();
+
+        for (Object state:automaton.states()) {
+            if (!terminals.contains(state))
+            negatedTerminals.add((State) state);
+        }
         terminals.clear();
-        terminals.addAll(states);
+        for (State state:negatedTerminals) terminals.add(state);
 
         return automaton;
     }
@@ -98,17 +105,19 @@ public class Utility {
 
         while (cont){
             Set<State> possibleWinningStates = new HashSet<>();
-            for (State s: winningStates) possibleWinningStates.addAll(automaton.deltaMinusOne(s));
-            for (State state:possibleWinningStates){
+            for (State s: winningStates) {
+                Set<Transition> tmp = automaton.deltaMinusOne(s);
+                Set<State> states = new HashSet<>();
+                for (Transition t:tmp) states.add(t.start());
+                possibleWinningStates.addAll(states);
+            }
+            Object arr[] = possibleWinningStates.toArray();
+            for (Object s:arr){
+                State state = (State) s;
                 if (winningStates.contains(state)) possibleWinningStates.remove(state);
                 else {
-                    Set<Transition> tmp = automaton.deltaMinusOne(state);
-                    Set<State> reachableStates = new HashSet<>();
-                    for (Transition transition:tmp) reachableStates.add(transition.end());
-                    for (State s : reachableStates) {
-                        boolean isWinning = haveObligedPath(automaton,state,s,domain);
-                        if (!isWinning) possibleWinningStates.remove(state);
-                    }
+                    if (haveObligedPath(automaton,state,winningStates,domain)) winningStates.add(state);
+                    else possibleWinningStates.remove(state);
                 }
             }
             if (possibleWinningStates.size()==0)cont = false;
@@ -118,9 +127,33 @@ public class Utility {
         return result;
     }
 
-    private static boolean haveObligedPath(Automaton automaton,State state1,State state2, Domain domain){
-        Set<Transition> transitions = automaton.deltaFrom(state1,state2);
+    private static boolean haveObligedPath(Automaton automaton,State state,Set<State> winningState, Domain domain){
+        Set<Set<Proposition>> environmentPATHS = domain.getCombinantionEnvironmentDomain();
+        Set<Set<Proposition>> agentPATHS = domain.getCombinantionAgentsDomain();
+        for (Set<Proposition> agentPath: agentPATHS){
+            boolean isWinning = true;
+            for (Set<Proposition> environmentPath:environmentPATHS){
+                HashSet<Proposition> path = new HashSet<>();
+                path.addAll(agentPath);
+                path.addAll(environmentPath);
+                Set<Transition> transitions = automaton.delta(state,path);
+                for (Transition transition:transitions) if (!winningState.contains(transition.end()))isWinning = false;
+            }
+            if (isWinning) return true;
+        }
+        return false;
+    }
 
-
+    public static void print(Automaton automaton,String name){
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(name);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        PrintStream ps = new PrintStream(fos);
+        ps.println(AutomatonUtils.toDot(automaton));
+        ps.flush();
+        ps.close();
     }
 }

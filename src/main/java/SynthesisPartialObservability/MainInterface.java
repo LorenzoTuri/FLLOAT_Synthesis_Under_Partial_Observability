@@ -23,13 +23,13 @@ public class MainInterface {
     boolean minimize = true;
     boolean trim = true;
     boolean noEmptyTrace = true;
-    boolean printing = false;
+    boolean printing = true;
 
-    int formulaType = Domain.FORMULALTLf;
 
     PropositionalSignature signature = (new Signature()).getSignature();
-    Domain domain = new Domain(formulaType);
+    Domain domain = new Domain();
     String input = domain.getInput();
+    int formulaType = domain.getFormulatype();
 
     public MainInterface(){
 
@@ -50,9 +50,11 @@ public class MainInterface {
         SynthesisPartialObservability synthesisPartialObservability = new SynthesisPartialObservability(automaton,domain);
         boolean result = synthesisPartialObservability.solve();
 
+        System.out.println((result? "":"non")+" esiste una strategia sempre vincente");
     }
 
     public static void main(String[] args) {
         new MainInterface();
+        return;
     }
 }
