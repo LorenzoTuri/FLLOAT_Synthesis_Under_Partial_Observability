@@ -6,17 +6,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by loren on 16/06/2016.
+ * Utility class used to set the formula, it's domain and some configuration
  */
 public class FormulaChoser {
     public static final int FORMULALTLf = 1;
     public static final int FORMULALDLf = 2;
 
+    //VARIABLES
     public int formulaType=0;
     public String input="";
     public Set<Proposition> X;
     public Set<Proposition> Y;
 
+    /**
+     * Construtor that assign the formula and it's given config, like the environment and agents set and type of formula.
+     * Is istantiated from the domain element
+     */
     FormulaChoser(){
         X = new HashSet<>();
         Y = new HashSet<>();

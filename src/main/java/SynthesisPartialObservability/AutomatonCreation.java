@@ -28,6 +28,17 @@ public class AutomatonCreation {
     boolean trim;
     boolean noEmptyTrace;
     boolean printing;
+
+    /**
+     * Constructor of the class. Stores config variables for successive use
+     * @param input         formula
+     * @param signature     signature of the formula
+     * @param declare       TODO don't know
+     * @param minimize      minimization of the automaton
+     * @param trim          TODO don't know
+     * @param noEmptyTrace  TODO don't know
+     * @param printing      print the automaton in a DOT file (.gv)
+     */
     AutomatonCreation(
             String input, PropositionalSignature signature, boolean declare,
             boolean minimize, boolean trim, boolean noEmptyTrace, boolean printing){
@@ -40,6 +51,10 @@ public class AutomatonCreation {
         this.printing= printing;
     }
 
+    /**
+     * Create the automaton from a LTLf formula. Error is the formula isn't LTLf
+     * @return the automaton
+     */
     public Automaton getAutomatonLTLf(){LTLfFormulaParserLexer lexer = new LTLfFormulaParserLexer(new ANTLRInputStream(input));
         LTLfFormulaParserParser parser = new LTLfFormulaParserParser(new CommonTokenStream(lexer));
         ParseTree tree = parser.expression();
@@ -49,19 +64,17 @@ public class AutomatonCreation {
         LTLfFormula antinnfFormula = formula.antinnf();
         LDLfFormula ldlff = antinnfFormula.toLDLf();
 
-        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, ldlff.getSignature());
+        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, signature);
 
-        automaton = new Reducer<>().transform(automaton);
-
-
-        if (printing) {
-            Utility.print(automaton,"ltlfAutomaton.gv");
-        }
+        checkFlag(automaton,"ltlfAutomaton.gv");
 
         return automaton;
     }
 
-
+    /**
+     * Create the autoaton from a LDLf formula. Error if the formula isn't LDLf
+     * @return the automaton
+     */
     public Automaton getAutomatonLDLf(){
         LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
         LDLfFormulaParserParser parser = new LDLfFormulaParserParser(new CommonTokenStream(lexer));
@@ -71,12 +84,22 @@ public class AutomatonCreation {
         LDLfFormula formula = visitor.visit(tree);
 
         Automaton automaton = AutomatonUtils.ldlf2Automaton(formula, formula.getSignature());
-        automaton = new Reducer<>().transform(automaton);
 
-        if (printing) {
-            Utility.print(automaton,"ltlfAutomaton.gv");
-        }
+        checkFlag(automaton,"ldlfAutomaton.gv");
 
         return automaton;
+    }
+
+    /**
+     * Checks configuration flag
+     * @param automaton the created automaton
+     * @param printingPath the path of the possible printing
+     */
+    private void checkFlag(Automaton automaton,String printingPath){
+        if (declare);
+        if (minimize) automaton = new Reducer<>().transform(automaton);
+        if (trim);
+        if (noEmptyTrace);
+        if (printing) Utility.print(automaton,printingPath);
     }
 }

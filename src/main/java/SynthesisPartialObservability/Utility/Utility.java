@@ -1,7 +1,6 @@
 package SynthesisPartialObservability.Utility;
 
 import FLLOAT.automaton.EmptyTrace;
-import FLLOAT.automaton.PossibleWorldWrap;
 import FLLOAT.automaton.TransitionLabel;
 import FLLOAT.utils.AutomatonUtils;
 import net.sf.tweety.logics.pl.semantics.PossibleWorld;
@@ -19,12 +18,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by loren on 15/06/2016.
+ * Main class of the automaton operation for partial observability synthesis
  */
 public class Utility {
     public static int METHOD_UPDATE = 1;
     public static int METHOD_CREATE = 2;
 
+    /**
+     * Used to erase hiddens proposition (not contained in the domain) from Transitions label
+     * @param automaton the original automaton
+     * @param method method of computin. METHOD_UPDATE updates the original automaton, METHOD_CREATE creates a new one
+     * @param domain domain of the orignal formula
+     * @return the modified automaton
+     */
     public static Automaton eraseHiddens(Automaton automaton,int method, Domain domain){
         Set<Transition> transitions = automaton.delta();
         Automaton result = null;
@@ -62,13 +68,20 @@ public class Utility {
         return result;
     }
 
+    /**
+     * Update the labels, erasing elements not contained in the domain
+     * @param transition original transition
+     * @param domain domain of the original formula
+     * @return a modified label for a transition
+     */
     private static TransitionLabel updateLabel(Transition transition, Domain domain){
         TransitionLabel result = null;
         if (transition.label() instanceof EmptyTrace){
+            //transition haven't elements of the domain, but must be kept
             result = new EmptyTrace();
 
         }else if (transition.label() instanceof PossibleWorld){
-            result = new PossibleWorldWrap();
+            //transition can have elements not contained in the domain.
             PossibleWorld pw = (PossibleWorld) transition.label();
             pw.retainAll(domain.getDomain());
             result = (TransitionLabel) pw;
@@ -77,6 +90,11 @@ public class Utility {
         return result;
     }
 
+    /**
+     * Used to negate the automaton. A negated automaton is an automaton with inverted terminals
+     * @param automaton original automaton
+     * @return the modified automaton
+     */
     public static Automaton negateAutomaton(Automaton automaton){
         Set<State> terminals = automaton.terminals();
         Set<State> negatedTerminals = new HashSet<>();
@@ -91,11 +109,22 @@ public class Utility {
         return automaton;
     }
 
-    public static Automaton normalize(Automaton automaton){
+    /**
+     * Used to make the automaton DFA
+     * @param automaton the original automaton
+     * @return the modified automaton
+     */
+    public static Automaton determinize(Automaton automaton){
         automaton = (new ToDFA<>()).transform(automaton);
         return automaton;
     }
 
+    /**
+     * Main function that solves a normal DFAGames
+     * @param automaton the automaton
+     * @param domain the domain of the original formula
+     * @return true, if there exists a winning solution, false otherwise
+     */
     public static boolean solveDFAGames(Automaton automaton,Domain domain){
         boolean result = false;
         Set<State> winningStates = new HashSet<>();
@@ -104,6 +133,20 @@ public class Utility {
         boolean cont = true;
 
         while (cont){
+            /*
+            This function uses this intuition:
+                We can compute the possible winning states set by finding states that can
+                take to a winning state
+                Observing those state we have 3 possibilities:
+                    1. the state is already a winning state
+                    2. the state is a new winning state
+                    3. the state is not a winning state
+                If the state is already a winning state we can remove it from the possible winning states set
+                If the state is a new winning state we can add it to the winning set
+                If the state isn't winning we can remove it from the possible winning set.
+                If at the end the possible winning state contains still some elements, this mean we've added a state to
+                the winning set, and we must compute all this again
+             */
             Set<State> possibleWinningStates = new HashSet<>();
             for (State s: winningStates) {
                 Set<Transition> tmp = automaton.deltaMinusOne(s);
@@ -127,6 +170,15 @@ public class Utility {
         return result;
     }
 
+    /**
+     * Used to compute is a state has a obliged path (every interpretation of the agents proposition take to a
+     * winning state, no mather of the environments propositions) to a winning state
+     * @param automaton the automaton
+     * @param state the starting state
+     * @param winningState set of winning states
+     * @param domain domain of the original function
+     * @return true if there is a obliged path, false otherwise
+     */
     private static boolean haveObligedPath(Automaton automaton,State state,Set<State> winningState, Domain domain){
         Set<Set<Proposition>> environmentPATHS = domain.getCombinantionEnvironmentDomain();
         Set<Set<Proposition>> agentPATHS = domain.getCombinantionAgentsDomain();
@@ -144,10 +196,15 @@ public class Utility {
         return false;
     }
 
-    public static void print(Automaton automaton,String name){
+    /**
+     * Used to print the automaton in a given path
+     * @param automaton the automaton
+     * @param path path
+     */
+    public static void print(Automaton automaton,String path){
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(name);
+            fos = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

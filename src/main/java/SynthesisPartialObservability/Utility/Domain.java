@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by loren on 15/06/2016.
+ * Class used to store various information about the formula and it's domain set
  */
 public class Domain {
     public static final int FORMULALTLf = FormulaChoser.FORMULALTLf;
@@ -15,11 +15,15 @@ public class Domain {
     private Set<Set<Proposition>> combinationAgentDomain = null;
     private Set<Set<Proposition>> combinationEnvironmentDomain = null;
 
+    //VARIABLES
     private String input = "";
     private int formulatype = 0;
     private Set<Proposition> X;
     private Set<Proposition> Y;
 
+    /**
+     * Constructor that instantiate the formula and assigns his variables
+     */
     public Domain(){
         FormulaChoser formulaChoser = new FormulaChoser();
         formulatype = formulaChoser.formulaType;
@@ -28,6 +32,7 @@ public class Domain {
         Y = formulaChoser.Y;
     }
 
+    ///// GETTER METHODS
     public String getInput() {return input;}
     public int getFormulatype() {return formulatype;}
     public Set<Proposition> getEnvironmentDomain() {return X;}
@@ -39,6 +44,7 @@ public class Domain {
         return tmp;
     }
 
+    ///// GETTER METHOD THAT CAN REQUIRE SETS COMPUTATION
     public Set<Set<Proposition>> getCombinantionAgentsDomain(){
         if (combinationAgentDomain!=null) return combinationAgentDomain;
         combinationAgentDomain = combinations(Y);

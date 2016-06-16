@@ -3,10 +3,14 @@ package SynthesisPartialObservability.Utility;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 
 /**
- * Created by loren on 15/06/2016.
+ * Class used to get the signature, used from FLLOAT automatons
  */
 public class Signature {
     PropositionalSignature signature = null;
+
+    /**
+     * Constructor of the signature
+     */
     public Signature(){
         /*
           If you wanna change the signature!
@@ -21,6 +25,11 @@ public class Signature {
 //      signature.add(y);
 //      signature.add(z);
     }
+
+    /**
+     * getter for the signature element
+     * @return the signature
+     */
     public PropositionalSignature getSignature(){
         return signature;
     }
