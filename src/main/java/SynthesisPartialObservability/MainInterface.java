@@ -9,6 +9,7 @@
 package SynthesisPartialObservability;
 
 import SynthesisPartialObservability.Utility.Domain;
+import SynthesisPartialObservability.Utility.FormulaChoser;
 import SynthesisPartialObservability.Utility.Signature;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import rationals.Automaton;
@@ -22,13 +23,14 @@ public class MainInterface {
     //CONFIGURATION PART
     boolean declare = false;        //TODO non so che faccia
     boolean minimize = true;        //minimizza l'automa il più possibile
-    boolean trim = true;            //TODO non so che faccia
-    boolean noEmptyTrace = true;    //TODO non so che faccia
+    boolean trim = false;           //TODO non so che faccia
+    boolean noEmptyTrace = false;   //TODO non so che faccia
     boolean printing = true;        //stampa l'automa in formato DOT su un file
 
     //VARIABLES
     PropositionalSignature signature = (new Signature()).getSignature();
-    Domain domain = new Domain();
+    FormulaChoser formulaChoser = new FormulaChoser();
+    Domain domain = new Domain(formulaChoser.input,formulaChoser.X,formulaChoser.Y,formulaChoser.formulaType);
     String input = domain.getInput();
     int formulaType = domain.getFormulatype();
 

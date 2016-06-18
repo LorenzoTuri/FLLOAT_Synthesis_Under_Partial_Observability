@@ -12,8 +12,8 @@ public class Domain {
     public static final int FORMULALTLf = FormulaChoser.FORMULALTLf;
     public static final int FORMULALDLf = FormulaChoser.FORMULALDLf;
 
-    private Set<Set<Proposition>> combinationAgentDomain = null;
-    private Set<Set<Proposition>> combinationEnvironmentDomain = null;
+    protected Set<Set<Proposition>> combinationAgentDomain = null;
+    protected Set<Set<Proposition>> combinationEnvironmentDomain = null;
 
     //VARIABLES
     private String input = "";
@@ -21,16 +21,26 @@ public class Domain {
     private Set<Proposition> X;
     private Set<Proposition> Y;
 
-    /**
-     * Constructor that instantiate the formula and assigns his variables
+	/**
+	 * Default constructor for a empty Domain
      */
     public Domain(){
-        FormulaChoser formulaChoser = new FormulaChoser();
-        formulatype = formulaChoser.formulaType;
-        input = formulaChoser.input;
-        X = formulaChoser.X;
-        Y = formulaChoser.Y;
+	    X = new HashSet<>();
+	    Y = new HashSet<>();
     }
+
+	/**
+	 * Constructor for the domain
+	 * @param input input formula
+	 * @param X input environment proposition set
+	 * @param Y input agent proposition set
+	 */
+	public Domain(String input,Set<Proposition> X, Set<Proposition> Y, int formulatype){
+		this.input = input;
+		this.Y = Y;
+		this.X = X;
+		this.formulatype = formulatype;
+	}
 
     ///// GETTER METHODS
     public String getInput() {return input;}

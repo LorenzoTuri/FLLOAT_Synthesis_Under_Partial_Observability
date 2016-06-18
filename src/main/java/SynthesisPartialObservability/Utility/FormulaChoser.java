@@ -22,7 +22,7 @@ public class FormulaChoser {
      * Construtor that assign the formula and it's given config, like the environment and agents set and type of formula.
      * Is istantiated from the domain element
      */
-    FormulaChoser(){
+    public FormulaChoser(){
         X = new HashSet<>();
         Y = new HashSet<>();
         /////////////////////// FORMULE LDLf //////////////////////////////
