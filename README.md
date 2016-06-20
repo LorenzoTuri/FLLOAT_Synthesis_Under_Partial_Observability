@@ -6,10 +6,10 @@ Using notion from [2016 De Giacomo and Vardi] this code computes synthesis of LT
 
 #####Steps to use the code:
 	1. import every usefull file
-	2. use https://github.com/LorenzoTuri/FLLOAT_Synthesis_Under_Partial_Observability/blob/master/src/main/java/SynthesisPartialObservability/AutomatonCreation.java
+	2. use src/main/java/SynthesisPartialObservability/AutomatonCreation.java
 		class to create the automaton
 		(This class requires a Domain element)
-	3. use https://github.com/LorenzoTuri/FLLOAT_Synthesis_Under_Partial_Observability/blob/master/src/main/java/SynthesisPartialObservability/SynthesisPartialObservability.java
+	3. use src/main/java/SynthesisPartialObservability/SynthesisPartialObservability.java
 		class to compute the synthesis
 		The instantiation of this class does nothing really important...
 		A call to solve() must be done in order to compute the synthesis
