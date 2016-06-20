@@ -64,7 +64,7 @@ public class AutomatonCreation {
         LTLfFormula antinnfFormula = formula.antinnf();
         LDLfFormula ldlff = antinnfFormula.toLDLf();
 
-        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, signature);
+        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, formula.getSignature());
 
         checkFlag(automaton,"ltlfAutomaton.gv");
 

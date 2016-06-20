@@ -12,6 +12,7 @@ public class Signature {
      * Constructor of the signature
      */
     public Signature(){
+        signature = new PropositionalSignature();
         /*
           If you wanna change the signature!
         */

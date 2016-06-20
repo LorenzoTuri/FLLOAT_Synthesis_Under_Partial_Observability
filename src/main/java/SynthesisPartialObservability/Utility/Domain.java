@@ -67,11 +67,12 @@ public class Domain {
     }
     private Set<Set<Proposition>> combinations(Set<Proposition> set){
         HashSet<Proposition> setCopy = new HashSet<>(set);
-
         HashSet<Set<Proposition>> container = new HashSet<>();
-        for (int i = 0;i<set.size();i++) {
+        for (int i = 1;i<=setCopy.size();i++) {
             container.addAll(permutations(setCopy,i));
         }
+	    HashSet<Proposition> tmp = new HashSet<>();
+	    container.add(tmp);
 
         return container;
     }
@@ -101,6 +102,10 @@ public class Domain {
 
     @Override
     public String toString() {
-        return "Environment: "+X+"\nAgent: "+Y+"\nInput: "+input+"\nFormulaType: "+(formulatype==FORMULALTLf?"LTLf":"LDLf");
+        return "Domain:\n" +
+                "\tEnvironment: "+X+"\n" +
+                "\tAgent: "+Y+"\n" +
+                "\tInput: "+input+"\n" +
+                "\tFormulaType: "+(formulatype==FORMULALTLf?"LTLf":"LDLf");
     }
 }

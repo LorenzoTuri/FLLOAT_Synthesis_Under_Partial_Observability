@@ -1,6 +1,7 @@
 package SynthesisPartialObservability.Utility;
 
 import FLLOAT.automaton.EmptyTrace;
+import FLLOAT.automaton.PossibleWorldWrap;
 import FLLOAT.automaton.TransitionLabel;
 import FLLOAT.utils.AutomatonUtils;
 import net.sf.tweety.logics.pl.semantics.PossibleWorld;
@@ -148,12 +149,8 @@ public class Utility {
                 the winning set, and we must compute all this again
              */
             Set<State> possibleWinningStates = new HashSet<>();
-            for (State s: winningStates) {
-                Set<Transition> tmp = automaton.deltaMinusOne(s);
-                Set<State> states = new HashSet<>();
-                for (Transition t:tmp) states.add(t.start());
-                possibleWinningStates.addAll(states);
-            }
+	        possibleWinningStates.addAll(automaton.coAccessibleStates(winningStates));
+
             Object arr[] = possibleWinningStates.toArray();
             for (Object s:arr){
                 State state = (State) s;
@@ -164,9 +161,9 @@ public class Utility {
                 }
             }
             if (possibleWinningStates.size()==0)cont = false;
-
         }
 
+	    for (Object s:automaton.initials()) if (winningStates.contains(s)) result = true;
         return result;
     }
 
@@ -185,7 +182,7 @@ public class Utility {
         for (Set<Proposition> agentPath: agentPATHS){
             boolean isWinning = true;
             for (Set<Proposition> environmentPath:environmentPATHS){
-                HashSet<Proposition> path = new HashSet<>();
+                PossibleWorldWrap path = new PossibleWorldWrap();
                 path.addAll(agentPath);
                 path.addAll(environmentPath);
                 Set<Transition> transitions = automaton.delta(state,path);

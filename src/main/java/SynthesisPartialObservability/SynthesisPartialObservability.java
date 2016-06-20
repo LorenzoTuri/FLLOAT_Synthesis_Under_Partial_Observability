@@ -29,11 +29,13 @@ public class SynthesisPartialObservability {
     public boolean solve(){
         //creo una copia di backup dell'automa
         Automaton originalAutomaton = automaton.clone();
+	    //determinizzo l'automa iniziale (ho osservato che potrebbe non esserlo dopo la traduzione da formula)
+	    automaton = Utility.determinize(automaton);
         //nego l'automa
         automaton = Utility.negateAutomaton(automaton);
         //cancello le variabili proposizionali nascoste
         automaton = Utility.eraseHiddens(automaton,Utility.METHOD_CREATE,domain);
-        //normalizzo l'automa risultante
+        //determinizzo l'automa risultante
         automaton = Utility.determinize(automaton);
         //nego nuovamente l'automa
         automaton = Utility.negateAutomaton(automaton);
