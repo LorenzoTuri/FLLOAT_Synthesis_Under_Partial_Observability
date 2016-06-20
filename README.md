@@ -15,5 +15,6 @@ Using notion from [2016 De Giacomo and Vardi] this code computes synthesis of LT
 #####Important:
 	- FormulaChooser class is just a data container, can be replaced by everything else...
 	- MainInterface class provides an exhaustive example of the use of this code
-	- Signature class has no use rigth now, and the same for every PropositionalSignature that must be passed to AutomatonCreation... a null reference or every class extending PropositionalSignature can be used, but doesn't change the results
+	- Signature class has no use rigth now, and the same for every PropositionalSignature that must be passed to AutomatonCreation... a null reference or every class extending PropositionalSignature can be used, but 
+	doesn't change the results
 	
