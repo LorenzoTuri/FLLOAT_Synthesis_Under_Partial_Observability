@@ -48,12 +48,12 @@ public class FormulaChoser {
             Y.add(new Proposition("b"));
             formulaType = FORMULALTLf;
         */
-        ///*
+        /*
             input = "G (a -> (F b))";
             Y.add(new Proposition("a"));
-            Y.add(new Proposition("b"));
+            X.add(new Proposition("b"));
             formulaType = FORMULALTLf;
-        //*/
+        */
         /*
             input = "(F((a U (b|c)) R ((X e) || ((WX f) && (G h) ) ) )) -> ((F d) R (((g)||(i)) U (l)))";
             X.add(new Proposition("a"));

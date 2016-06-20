@@ -11,13 +11,15 @@ import rationals.Automaton;
 public class SynthesisPartialObservability {
     Automaton automaton;
     Domain domain;
+	boolean printing;
 
     /**
      * Constructor of the class. Simply stores value, used in function solve()
      * @param automaton the automaton that we want to verify
      * @param domain the domain of the original formula
      */
-    public SynthesisPartialObservability(Automaton automaton, Domain domain){
+    public SynthesisPartialObservability(Automaton automaton, Domain domain, boolean printOnFilePartialAutomaton){
+	    this.printing = printOnFilePartialAutomaton;
         this.automaton = automaton;
         this.domain = domain;
     }
@@ -39,6 +41,8 @@ public class SynthesisPartialObservability {
         automaton = Utility.determinize(automaton);
         //nego nuovamente l'automa
         automaton = Utility.negateAutomaton(automaton);
+	    //stampo su file l'automa parziale
+	    if (printing) Utility.print(automaton,"partialAutomaton.gv");
         //risolvo l'automa come fosse un normale DFAGames
         boolean result = Utility.solveDFAGames(automaton,domain);
         //ripristino la copia di backup

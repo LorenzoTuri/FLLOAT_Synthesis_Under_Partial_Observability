@@ -35,7 +35,7 @@ public class MainInterface {
     int formulaType = domain.getFormulatype();
 
     public MainInterface(){
-
+		long startTime = System.nanoTime();
         //Creation of the automa, starting from a formula
         if (formulaType == Domain.FORMULALTLf){
             automaton = (new AutomatonCreation(input,
@@ -48,9 +48,15 @@ public class MainInterface {
                     trim,noEmptyTrace,printing)).getAutomatonLDLf();
 
         }else return;
-
+		System.out.println("Tempo di creazione automa: "+
+				(System.nanoTime()-startTime)+" ns, = "+
+				(System.nanoTime()-startTime)/1000000+" ms");
         //Compute the synthesis of the partial observability winning solution
-        SynthesisPartialObservability synthesisPartialObservability = new SynthesisPartialObservability(automaton,domain);
+	    startTime = System.nanoTime();
+	    System.out.println("Tempo di soluzione della strategia vincente: "+
+			    (System.nanoTime()-startTime)+" ns, = "+
+			    (System.nanoTime()-startTime)/1000000+" ms");
+        SynthesisPartialObservability synthesisPartialObservability = new SynthesisPartialObservability(automaton,domain,true);
         boolean result = synthesisPartialObservability.solve();
 
         System.out.println((result? "":"non ")+"esiste una strategia sempre vincente");
