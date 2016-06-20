@@ -13,10 +13,12 @@ public class SynthesisPartialObservability {
     Domain domain;
 	boolean printing;
 
+	//TODO add of various exceptions to this class, like NotFLLOATGeneratedAutomaException etc...
     /**
      * Constructor of the class. Simply stores value, used in function solve()
      * @param automaton the automaton that we want to verify
      * @param domain the domain of the original formula
+     * @param printOnFilePartialAutomaton automaton should be printed or not as partialAutomaton.gv
      */
     public SynthesisPartialObservability(Automaton automaton, Domain domain, boolean printOnFilePartialAutomaton){
 	    this.printing = printOnFilePartialAutomaton;
@@ -29,23 +31,23 @@ public class SynthesisPartialObservability {
      * @return true if there is a partial observability winning solution, false otherwise
      */
     public boolean solve(){
-        //creo una copia di backup dell'automa
+        //backup copy creation of the automa
         Automaton originalAutomaton = automaton.clone();
-	    //determinizzo l'automa iniziale (ho osservato che potrebbe non esserlo dopo la traduzione da formula)
-	    automaton = Utility.determinize(automaton);
-        //nego l'automa
+	    //determination of the initial automata (automa could be NFA after creation from formula)
+	    automaton = Utility.determine(automaton);
+        //negation of automata's final states
         automaton = Utility.negateAutomaton(automaton);
-        //cancello le variabili proposizionali nascoste
-        automaton = Utility.eraseHiddens(automaton,Utility.METHOD_CREATE,domain);
-        //determinizzo l'automa risultante
-        automaton = Utility.determinize(automaton);
-        //nego nuovamente l'automa
+        //erase of the hidden proposition, aka proposition that doesn't appear in the domain
+        automaton = Utility.eraseHidden(automaton,Utility.METHOD_CREATE,domain);
+        //determination of the automata
+        automaton = Utility.determine(automaton);
+        //negation of the automata
         automaton = Utility.negateAutomaton(automaton);
-	    //stampo su file l'automa parziale
+	    //print on file
 	    if (printing) Utility.print(automaton,"partialAutomaton.gv");
-        //risolvo l'automa come fosse un normale DFAGames
+        //solution of the automa as a normal DFAGames
         boolean result = Utility.solveDFAGames(automaton,domain);
-        //ripristino la copia di backup
+        //reset of backup copy
         automaton = originalAutomaton;
         return result;
     }

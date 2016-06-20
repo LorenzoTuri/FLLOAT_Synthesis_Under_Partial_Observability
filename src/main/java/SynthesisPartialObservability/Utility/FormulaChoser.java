@@ -74,11 +74,11 @@ public class FormulaChoser {
             Y.add(new Proposition("aa"));
             formulaType = FORMULALTLf;
         */
-        /*
+        ///*
             input = "(G(rl -> (F aa))) & (G(aa -> (X dl)))";
             X.add(new Proposition("rl"));
             Y.add(new Proposition("aa"));
             formulaType = FORMULALTLf;
-        */
+        //*/
     }
 }

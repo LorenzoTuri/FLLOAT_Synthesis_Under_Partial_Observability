@@ -4,9 +4,11 @@ import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 
 /**
  * Class used to get the signature, used from FLLOAT automatons
+ * This class has no use for now...may be further implemented later
+ * TODO: implement this when FLLOAT permits it
  */
 public class Signature {
-    PropositionalSignature signature = null;
+    private PropositionalSignature signature = null;
 
     /**
      * Constructor of the signature

@@ -29,6 +29,8 @@ public class AutomatonCreation {
     boolean noEmptyTrace;
     boolean printing;
 
+	//TODO add NotAppropriateFormulaException to getAutomatonLTLf and getAutomatonLDLf
+
     /**
      * Constructor of the class. Stores config variables for successive use
      * @param input         formula
@@ -55,7 +57,8 @@ public class AutomatonCreation {
      * Create the automaton from a LTLf formula. Error is the formula isn't LTLf
      * @return the automaton
      */
-    public Automaton getAutomatonLTLf(){LTLfFormulaParserLexer lexer = new LTLfFormulaParserLexer(new ANTLRInputStream(input));
+    public Automaton getAutomatonLTLf() {
+        LTLfFormulaParserLexer lexer = new LTLfFormulaParserLexer(new ANTLRInputStream(input));
         LTLfFormulaParserParser parser = new LTLfFormulaParserParser(new CommonTokenStream(lexer));
         ParseTree tree = parser.expression();
         LTLfVisitor visitor = new LTLfVisitor();
@@ -72,10 +75,10 @@ public class AutomatonCreation {
     }
 
     /**
-     * Create the autoaton from a LDLf formula. Error if the formula isn't LDLf
+     * Create the automaton from a LDLf formula. Error if the formula isn't LDLf
      * @return the automaton
      */
-    public Automaton getAutomatonLDLf(){
+    public Automaton getAutomatonLDLf() {
         LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
         LDLfFormulaParserParser parser = new LDLfFormulaParserParser(new CommonTokenStream(lexer));
         ParseTree tree = parser.expression();
@@ -84,7 +87,6 @@ public class AutomatonCreation {
         LDLfFormula formula = visitor.visit(tree);
 
         Automaton automaton = AutomatonUtils.ldlf2Automaton(formula, formula.getSignature());
-
         checkFlag(automaton,"ldlfAutomaton.gv");
 
         return automaton;
@@ -96,7 +98,7 @@ public class AutomatonCreation {
      * @param printingPath the path of the possible printing
      */
     private void checkFlag(Automaton automaton,String printingPath){
-        if (declare);
+        if (declare) ;
         if (minimize) automaton = new Reducer<>().transform(automaton);
         if (trim);
         if (noEmptyTrace);

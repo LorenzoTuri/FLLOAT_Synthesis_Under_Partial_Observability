@@ -12,12 +12,12 @@ public class Domain {
     public static final int FORMULALTLf = FormulaChoser.FORMULALTLf;
     public static final int FORMULALDLf = FormulaChoser.FORMULALDLf;
 
-    protected Set<Set<Proposition>> combinationAgentDomain = null;
-    protected Set<Set<Proposition>> combinationEnvironmentDomain = null;
+    private Set<Set<Proposition>> combinationAgentDomain = null;
+    private Set<Set<Proposition>> combinationEnvironmentDomain = null;
 
     //VARIABLES
     private String input = "";
-    private int formulatype = 0;
+    private int formulaType = 0;
     private Set<Proposition> X;
     private Set<Proposition> Y;
 
@@ -35,16 +35,16 @@ public class Domain {
 	 * @param X input environment proposition set
 	 * @param Y input agent proposition set
 	 */
-	public Domain(String input,Set<Proposition> X, Set<Proposition> Y, int formulatype){
+	public Domain(String input,Set<Proposition> X, Set<Proposition> Y, int formulaType){
 		this.input = input;
 		this.Y = Y;
 		this.X = X;
-		this.formulatype = formulatype;
+		this.formulaType =  formulaType;
 	}
 
     ///// GETTER METHODS
     public String getInput() {return input;}
-    public int getFormulatype() {return formulatype;}
+    public int getFormulaType() {return formulaType;}
     public Set<Proposition> getEnvironmentDomain() {return X;}
     public Set<Proposition> getAgentDomain() {return Y;}
     public Set<Proposition> getDomain(){
@@ -53,6 +53,18 @@ public class Domain {
         tmp.addAll(Y);
         return tmp;
     }
+
+	///// SETTER METHODS
+	public void setInput(String input) {this.input = input;}
+	public void setFormulaType(int formulaType){this.formulaType = formulaType;}
+	public void setEnvironmentDomain(Set<Proposition> X){
+		this.X = X;
+		combinationEnvironmentDomain = null;
+	}
+	public void setAgentDomain(Set<Proposition> Y){
+		this.Y = Y;
+		combinationAgentDomain = null;
+	}
 
     ///// GETTER METHOD THAT CAN REQUIRE SETS COMPUTATION
     public Set<Set<Proposition>> getCombinantionAgentsDomain(){
@@ -106,6 +118,6 @@ public class Domain {
                 "\tEnvironment: "+X+"\n" +
                 "\tAgent: "+Y+"\n" +
                 "\tInput: "+input+"\n" +
-                "\tFormulaType: "+(formulatype==FORMULALTLf?"LTLf":"LDLf");
+                "\tFormulaType: "+(formulaType ==FORMULALTLf?"LTLf":"LDLf");
     }
 }

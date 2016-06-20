@@ -32,7 +32,7 @@ public class Utility {
      * @param domain domain of the orignal formula
      * @return the modified automaton
      */
-    public static Automaton eraseHiddens(Automaton automaton,int method, Domain domain){
+    public static Automaton eraseHidden(Automaton automaton, int method, Domain domain){
         Set<Transition> transitions = automaton.delta();
         Automaton result = null;
         if (method == METHOD_UPDATE){
@@ -115,7 +115,7 @@ public class Utility {
      * @param automaton the original automaton
      * @return the modified automaton
      */
-    public static Automaton determinize(Automaton automaton){
+    public static Automaton determine(Automaton automaton){
         automaton = (new ToDFA<>()).transform(automaton);
         return automaton;
     }
@@ -199,15 +199,15 @@ public class Utility {
      * @param path path
      */
     public static void print(Automaton automaton,String path){
-        FileOutputStream fos = null;
+        FileOutputStream fos;
         try {
             fos = new FileOutputStream(path);
+	        PrintStream ps = new PrintStream(fos);
+	        ps.println(AutomatonUtils.toDot(automaton));
+	        ps.flush();
+	        ps.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        PrintStream ps = new PrintStream(fos);
-        ps.println(AutomatonUtils.toDot(automaton));
-        ps.flush();
-        ps.close();
     }
 }

@@ -30,7 +30,7 @@ import java.util.Set;
  * This class is for runtime verification purposes. It simply contains the reference to the current
  * state of the FLLOAT.automaton.
  * ASSUMPTIONS:
- * 1) The FLLOAT.automaton is deterministic (it is always possible to determinize it);
+ * 1) The FLLOAT.automaton is deterministic (it is always possible to determine it);
  *
  * 2) It has one initial state only (notice that, due to our algorithm, the
  * initial state is always unique.)
