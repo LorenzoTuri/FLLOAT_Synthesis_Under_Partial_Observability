@@ -21,3 +21,4 @@ Using notion from [2016 De Giacomo and Vardi] this code computes synthesis of LT
 	  that must be passed to AutomatonCreation... a null reference or every class extending 
 	  PropositionalSignature can be used, but doesn't change the results
 	
+[a markdownProva](www.google.it)
