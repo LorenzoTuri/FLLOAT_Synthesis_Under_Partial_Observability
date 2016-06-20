@@ -6,9 +6,11 @@ Using notion from [2016 De Giacomo and Vardi] this code computes synthesis of LT
 
 #####Steps to use the code:
 	1. import every usefull file
-	2. use src/main/java/SynthesisPartialObservability/AutomatonCreation class to create the automaton
+	2. use src/main/java/SynthesisPartialObservability/AutomatonCreation 
+		class to create the automaton
 		(This class requires a Domain element)
-	3. use src/main/java/SynthesisPartialObservability/SynthesisPartialObservability class to compute the synthesis
+	3. use src/main/java/SynthesisPartialObservability/SynthesisPartialObservability 
+		class to compute the synthesis
 		The instantiation of this class does nothing really important...
 		A call to solve() must be done in order to compute the synthesis
 		
