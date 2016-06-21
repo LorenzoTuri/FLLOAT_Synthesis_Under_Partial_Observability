@@ -2,3 +2,5 @@
 /.idea
 *.gv
 *.iml
+src/main/resources/
+src/test/

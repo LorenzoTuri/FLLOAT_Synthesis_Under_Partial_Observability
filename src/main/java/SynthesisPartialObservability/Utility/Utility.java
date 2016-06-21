@@ -1,15 +1,16 @@
 package SynthesisPartialObservability.Utility;
 
-/*import FLLOAT.automaton.EmptyTrace;
-import FLLOAT.automaton.PossibleWorldWrap;
-import FLLOAT.automaton.TransitionLabel;
-import FLLOAT.utils.AutomatonUtils;*/
+import automaton.EmptyTrace;
+import automaton.PossibleWorldWrap;
+import automaton.TransitionLabel;
 import net.sf.tweety.logics.pl.semantics.PossibleWorld;
 import net.sf.tweety.logics.pl.syntax.Proposition;
 import rationals.Automaton;
 import rationals.State;
 import rationals.Transition;
 import rationals.transformations.ToDFA;
+import synthesis.symbols.PartitionedDomain;
+import utils.AutomatonUtils;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,7 +33,7 @@ public class Utility {
      * @param domain domain of the orignal formula
      * @return the modified automaton
      */
-    public static Automaton eraseHidden(Automaton automaton, int method, Domain domain){
+    public static Automaton eraseHidden(Automaton automaton, int method, PartitionedDomain domain){
         Set<Transition> transitions = automaton.delta();
         Automaton result = null;
         if (method == METHOD_UPDATE){
@@ -75,20 +76,19 @@ public class Utility {
      * @param domain domain of the original formula
      * @return a modified label for a transition
      */
-    private static TransitionLabel updateLabel(Transition transition, Domain domain){
-        TransitionLabel result = null;
-        if (transition.label() instanceof EmptyTrace){
-            //transition haven't elements of the domain, but must be kept
-            result = new EmptyTrace();
+    private static TransitionLabel updateLabel(Transition transition, PartitionedDomain domain) {
+	    if (transition.label() instanceof EmptyTrace) {
+		    //transition haven't elements of the domain, but must be kept
+		    //result = new EmptyTrace();
+		    return (TransitionLabel) transition.label();
 
-        }else if (transition.label() instanceof PossibleWorld){
-            //transition can have elements not contained in the domain.
-            PossibleWorld pw = (PossibleWorld) transition.label();
-            pw.retainAll(domain.getDomain());
-            result = (TransitionLabel) pw;
-        }else return null;
-
-        return result;
+	    } else if (transition.label() instanceof PossibleWorld) {
+		    //transition can have elements not contained in the domain.
+		    PossibleWorld pw = (PossibleWorld) transition.label();
+		    pw.retainAll(domain.getCompleteDomain());
+		    return (TransitionLabel) pw;
+	    }
+	    return null;
     }
 
     /**

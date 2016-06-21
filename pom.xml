@@ -32,11 +32,6 @@
 	    </dependency>
 	    <dependency>
 		    <groupId>eu.fbk.shell</groupId>
-		    <artifactId>jautomata</artifactId>
-		    <version>05.2015-snapshot</version>
-	    </dependency>
-	    <dependency>
-		    <groupId>eu.fbk.shell</groupId>
 		    <artifactId>flloat</artifactId>
 		    <version>1.0-SNAPSHOT</version>
 	    </dependency>

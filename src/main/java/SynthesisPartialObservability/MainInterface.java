@@ -13,6 +13,7 @@ import SynthesisPartialObservability.Utility.FormulaChoser;
 import SynthesisPartialObservability.Utility.Signature;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import rationals.Automaton;
+import synthesis.symbols.PartitionedDomain;
 
 /**
  * Class used to run the program, not necessary to the project
@@ -30,9 +31,10 @@ public class MainInterface {
     //VARIABLES
     public PropositionalSignature signature = (new Signature()).getSignature();        //per ora non serve a niente
     public FormulaChoser formulaChoser = new FormulaChoser();
-    public Domain domain = new Domain(formulaChoser.input,formulaChoser.X,formulaChoser.Y,formulaChoser.formulaType);
-    public String input = domain.getInput();
-    public int formulaType = domain.getFormulaType();
+    //public Domain domain = new Domain(formulaChoser.input,formulaChoser.X,formulaChoser.Y,formulaChoser.formulaType);
+	public PartitionedDomain domain = new PartitionedDomain(formulaChoser.X,formulaChoser.Y);
+    public String input = formulaChoser.input;
+    public int formulaType = formulaChoser.formulaType;
 
     public MainInterface() {
 	    long startTime = System.nanoTime();
