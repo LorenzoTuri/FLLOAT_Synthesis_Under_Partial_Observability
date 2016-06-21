@@ -21,4 +21,5 @@ Using notion from [2016 De Giacomo and Vardi] this code computes synthesis of LT
 	
 
 [AutomatonCreation](https://github.com/LorenzoTuri/FLLOAT_Synthesis_Under_Partial_Observability/blob/master/src/main/java/SynthesisPartialObservability/AutomatonCreation.java)
+
 [SynthesisPartialObservability](https://github.com/LorenzoTuri/FLLOAT_Synthesis_Under_Partial_Observability/blob/master/src/main/java/SynthesisPartialObservability/SynthesisPartialObservability.java)
