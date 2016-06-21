@@ -1,5 +1,5 @@
 package SynthesisPartialObservability;
-
+/*
 import FLLOAT.antlr4_generated.LDLfFormulaParserLexer;
 import FLLOAT.antlr4_generated.LDLfFormulaParserParser;
 import FLLOAT.antlr4_generated.LTLfFormulaParserLexer;
@@ -9,13 +9,13 @@ import FLLOAT.formula.ltlf.LTLfFormula;
 import FLLOAT.utils.AutomatonUtils;
 import FLLOAT.visitors.LDLfVisitors.LDLfVisitor;
 import FLLOAT.visitors.LTLfVisitors.LTLfVisitor;
-import SynthesisPartialObservability.Utility.Utility;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import rationals.Automaton;
-import rationals.transformations.Reducer;
+import rationals.transformations.Reducer;*/
+import SynthesisPartialObservability.Utility.Utility;
 
 /**
  * Created by loren on 15/06/2016.

@@ -1,9 +1,9 @@
 package SynthesisPartialObservability.Utility;
 
-import FLLOAT.automaton.EmptyTrace;
+/*import FLLOAT.automaton.EmptyTrace;
 import FLLOAT.automaton.PossibleWorldWrap;
 import FLLOAT.automaton.TransitionLabel;
-import FLLOAT.utils.AutomatonUtils;
+import FLLOAT.utils.AutomatonUtils;*/
 import net.sf.tweety.logics.pl.semantics.PossibleWorld;
 import net.sf.tweety.logics.pl.syntax.Proposition;
 import rationals.Automaton;

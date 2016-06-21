@@ -38,7 +38,7 @@ public class SynthesisPartialObservability {
         //negation of automata's final states
         automaton = Utility.negateAutomaton(automaton);
         //erase of the hidden proposition, aka proposition that doesn't appear in the domain
-        automaton = Utility.eraseHidden(automaton,Utility.METHOD_CREATE,domain);
+        automaton = Utility.eraseHidden(automaton, Utility.METHOD_CREATE,domain);
         //determination of the automata
         automaton = Utility.determine(automaton);
         //negation of the automata
