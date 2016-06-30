@@ -1,6 +1,5 @@
 package SynthesisPartialObservability.Utility;
 
-import formula.ltlf.LTLfLocalVar;
 import synthesis.symbols.PropositionSet;
 
 /**
@@ -13,6 +12,7 @@ public class FormulaChoser {
     //VARIABLES
     public int formulaType=0;
     public String input="";
+	public String toStringOutput = "";
     public PropositionSet X;
     public PropositionSet Y;
 
@@ -72,11 +72,17 @@ public class FormulaChoser {
             Y.add(new LTLfLocalVar("aa"));
             formulaType = FORMULALTLf;
         */
-        ///*
+        /*
             input = "(G(rl -> (F aa))) & (G(aa -> (X dl)))";
             X.add(new LTLfLocalVar("rl"));
             Y.add(new LTLfLocalVar("aa"));
             formulaType = FORMULALTLf;
-        //*/
+        */
+
     }
+
+	@Override
+	public String toString() {
+		return toStringOutput;
+	}
 }

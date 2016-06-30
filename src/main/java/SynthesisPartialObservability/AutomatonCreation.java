@@ -67,7 +67,9 @@ public class AutomatonCreation {
         LTLfFormula antinnfFormula = formula.antinnf();
         LDLfFormula ldlff = antinnfFormula.toLDLf();
 
-        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, formula.getSignature());
+        PropositionalSignature usedSignature = (signature==null? new PropositionalSignature() : signature);
+
+        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, usedSignature);
 
         checkFlag(automaton,"ltlfAutomaton.gv");
 
@@ -86,7 +88,9 @@ public class AutomatonCreation {
         LDLfVisitor visitor = new LDLfVisitor();
         LDLfFormula formula = visitor.visit(tree);
 
-        Automaton automaton = AutomatonUtils.ldlf2Automaton(formula, formula.getSignature());
+	    PropositionalSignature usedSignature = (signature==null? new PropositionalSignature() : signature);
+
+        Automaton automaton = AutomatonUtils.ldlf2Automaton(formula, usedSignature);
         checkFlag(automaton,"ldlfAutomaton.gv");
 
         return automaton;

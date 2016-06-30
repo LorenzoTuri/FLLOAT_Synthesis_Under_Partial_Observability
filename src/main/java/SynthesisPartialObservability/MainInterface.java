@@ -10,10 +10,11 @@ package SynthesisPartialObservability;
 
 import SynthesisPartialObservability.Utility.Domain;
 import SynthesisPartialObservability.Utility.FormulaChoser;
-import SynthesisPartialObservability.Utility.Signature;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import rationals.Automaton;
 import synthesis.symbols.PartitionedDomain;
+
+import java.util.Date;
 
 /**
  * Class used to run the program, not necessary to the project
@@ -29,7 +30,7 @@ public class MainInterface {
     public boolean printing = true;        //print of the automa on file with DOT format
 
     //VARIABLES
-    public PropositionalSignature signature = (new Signature()).getSignature();        //per ora non serve a niente
+    public PropositionalSignature signature = null;        //per ora non serve a niente
     public FormulaChoser formulaChoser = new FormulaChoser();
     //public Domain domain = new Domain(formulaChoser.input,formulaChoser.X,formulaChoser.Y,formulaChoser.formulaType);
 	public PartitionedDomain domain = new PartitionedDomain(formulaChoser.X,formulaChoser.Y);
@@ -37,6 +38,11 @@ public class MainInterface {
     public int formulaType = formulaChoser.formulaType;
 
     public MainInterface() {
+	    long millis = System.currentTimeMillis();
+	    Date date = new Date(millis);
+	    System.out.println("Exact initial time (HH,MM,SS,mil)-> "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+":"+millis%1000);
+	    System.out.println(formulaChoser);
+
 	    long startTime = System.nanoTime();
 	    //Creation of the automa, starting from a formula
 	    if (formulaType == Domain.FORMULALTLf) {
@@ -59,8 +65,8 @@ public class MainInterface {
 	    System.out.println("Partial solution computing time: " +
 			    (System.nanoTime() - startTime) + " ns, = " +
 			    (System.nanoTime() - startTime) / 1000000 + " ms");
-	    SynthesisPartialObservability synthesisPartialObservability =
-			    new SynthesisPartialObservability(automaton, domain, true);
+
+	    SynthesisPartialObservability synthesisPartialObservability = new SynthesisPartialObservability(automaton, domain, true);
 	    boolean result = synthesisPartialObservability.solve();
 
 	    System.out.println((result ? "there is " : "there isn't ") + "a always winning solution");
