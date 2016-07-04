@@ -15,7 +15,6 @@ public class DoubleMurphyFormulas {
 	private String objective;
 	private List<String> actions;
 	private PropositionalSignature signature;
-	private String input;
 
 	public DoubleMurphyFormulas(){
 		init = "( isonl && !isonr && !cleanr && !cleanl )";
@@ -55,9 +54,6 @@ public class DoubleMurphyFormulas {
 		getSignature().add(new Proposition("cleanraction"));
 		getSignature().add(new Proposition("movelaction"));
 		getSignature().add(new Proposition("moveraction"));
-
-		input= getInit() +" && "+"("+ getExclusions() +" && ("+movel+" || "+mover+" ||"+cleanr+" || "+cleanl+" ) || true)"+" && "+ getObjective();
-
 	}
 
 	public String getInit() {
@@ -79,11 +75,6 @@ public class DoubleMurphyFormulas {
 	public PropositionalSignature getSignature() {
 		return signature;
 	}
-
-	public String getInput() {
-		return input;
-	}
-
 
 	/**
 	 * Initial situation, everything dirty and vacuum is on the left space.

@@ -67,7 +67,7 @@ public class AutomatonCreation {
         LTLfFormula antinnfFormula = formula.antinnf();
         LDLfFormula ldlff = antinnfFormula.toLDLf();
 
-        PropositionalSignature usedSignature = (signature==null? new PropositionalSignature() : signature);
+        PropositionalSignature usedSignature = (signature==null? formula.getSignature() : signature);
 
         Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, usedSignature);
 
