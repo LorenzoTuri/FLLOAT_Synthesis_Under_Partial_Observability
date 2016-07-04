@@ -29,8 +29,6 @@ public class AutomatonCreation {
     boolean noEmptyTrace;
     boolean printing;
 
-	//TODO add NotAppropriateFormulaException to getAutomatonLTLf and getAutomatonLDLf
-
     /**
      * Constructor of the class. Stores config variables for successive use
      * @param input         formula

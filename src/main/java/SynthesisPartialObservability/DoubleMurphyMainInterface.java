@@ -44,7 +44,8 @@ public class DoubleMurphyMainInterface {
  		 */
 
 		DoubleMurphyFormulas formulas = new DoubleMurphyFormulas();
-		//creation of the automaton with the initialization formula
+
+		//Creation of the automaton with the initialization formula
 		Automaton initAutomaton = ((new AutomatonCreation(
 				formulas.getInit(),
 				formulas.getSignature(),
@@ -59,7 +60,7 @@ public class DoubleMurphyMainInterface {
 		System.out.println("created: initAutomaton");
 		timingHandler.add("Init Automaton Creation",System.currentTimeMillis());
 
-		//creation of the automaton with the exclusion formula
+		//Creation of the automaton with the exclusion formula
 		Automaton exclusionAutomaton = (new AutomatonCreation(
 				formulas.getExclusions(),
 				formulas.getSignature(),
@@ -74,7 +75,7 @@ public class DoubleMurphyMainInterface {
 		System.out.println("created: exclusionAutomaton");
 		timingHandler.add("Exclusion Automaton Creation",System.currentTimeMillis());
 
-		//creation of the automatons with the actions formulas
+		//Creation of the automatons with the actions formulas
 		Automaton actionsAutomaton[] = new Automaton[formulas.getActions().size()];
 		for(int i = 0;i<formulas.getActions().size();i++){
 			actionsAutomaton[i] = (new AutomatonCreation(
@@ -94,7 +95,7 @@ public class DoubleMurphyMainInterface {
 		}
 		timingHandler.add("Actions Automaton Completion",System.currentTimeMillis());
 
-		//creation of the automaton with the "true" formula
+		//Creation of the automaton with the "true" formula
 		Automaton trueAutomaton = (new AutomatonCreation(
 				"true",
 				formulas.getSignature(),
@@ -109,7 +110,7 @@ public class DoubleMurphyMainInterface {
 		System.out.println("created: trueAutomaton");
 		timingHandler.add("True Automaton Creation",System.currentTimeMillis());
 
-		//creation of the automaton with the objectives formula
+		//Creation of the automaton with the objectives formula
 		Automaton objectivesAutomaton = (new AutomatonCreation(
 				formulas.getObjective(),
 				formulas.getSignature(),
@@ -124,7 +125,7 @@ public class DoubleMurphyMainInterface {
 		System.out.println("created: objectivesAutomaton");
 		timingHandler.add("Objectives Automaton Creation",System.currentTimeMillis());
 
-		//computing the union of the actions formulas.
+		//Computing the union of the actions formulas.
 		Automaton unionActionsAutomaton = actionsAutomaton[0];
 		for (int i = 1;i<actionsAutomaton.length;i++)
 			unionActionsAutomaton = (new Union<>()).transform(unionActionsAutomaton,actionsAutomaton[i]);
@@ -132,25 +133,26 @@ public class DoubleMurphyMainInterface {
 		System.out.println("computed: unionActionsAutomaton");
 		timingHandler.add("Union of Actions Automaton Computation",System.currentTimeMillis());
 
-		//computing intersection between actions and exclusions.
+		//Computing intersection between actions and exclusions.
 		Automaton mixedActionsExclusionsAutomaton = (new Mix<>()).transform(unionActionsAutomaton,exclusionAutomaton);
 		Utility.print(mixedActionsExclusionsAutomaton,"DoubleMurphy/mixedActionsExsclusionsAutomaton.gv");
 		System.out.println("computed: mixedActionsExclusionsAutomaton");
 		timingHandler.add("Mixing between Action and Exclusion Automaton Computation",System.currentTimeMillis());
 
-		//computing "body part" of the formula (union of mixedActionsEsclusionsAutomaton and trueAutomaton)
+		//Computing "body part" of the formula (union of mixedActionsEsclusionsAutomaton and trueAutomaton)
 		Automaton bodyAutomaton = (new Union<>()).transform(mixedActionsExclusionsAutomaton,trueAutomaton);
 		Utility.print(bodyAutomaton,"DoubleMurphy/bodyAutomaton.gv");
 		System.out.println("computed: bodyAutomaton");
 		timingHandler.add("Body Formulas Automaton Computation",System.currentTimeMillis());
 
-		//computing intersection (MIX) of initialization, body and objectives automaton
+		//Computing intersection (MIX) of initialization, body and objectives automaton
 		Automaton completeAutomaton = (new Mix<>()).transform(initAutomaton,bodyAutomaton);
 		completeAutomaton = (new Mix<>()).transform(completeAutomaton,objectivesAutomaton);
 		Utility.print(completeAutomaton,"DoubleMurphy/completeAutomaton.gv");
 		System.out.println("computed: completeAutomaton");
 		timingHandler.add("Complete Automaton Computation",System.currentTimeMillis());
 
+		//Computation of the winning solution
 		SynthesisPartialObservability synthesis = new SynthesisPartialObservability(
 				completeAutomaton,
 				formulas.getDomain(),
@@ -158,6 +160,8 @@ public class DoubleMurphyMainInterface {
 		System.out.println("The Double Murphy problem "+(synthesis.solve()?"has":"hasn't")+" a always winning solution");
 		timingHandler.add("Solution Computation",System.currentTimeMillis());
 
+
+		//Summary of the timing.
 		System.out.println("\n\n\n---------------------------------  TIMING SUMMARY  -----------------------------------\n");
 		List<TimingHandler.DataContainer> timers = timingHandler.get();
 		long previousTime = StartingTime;
