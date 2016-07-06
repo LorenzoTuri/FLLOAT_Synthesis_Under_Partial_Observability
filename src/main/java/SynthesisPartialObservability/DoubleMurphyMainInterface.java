@@ -134,7 +134,6 @@ public class DoubleMurphyMainInterface {
 		//Computing the union of the actions formulas.
 		Automaton unionActionsAutomaton = actionsAutomaton[0];
 		for (int i = 1;i<actionsAutomaton.length;i++)
-			unionActionsAutomaton = (new Union<>()).transform(unionActionsAutomaton,actionsAutomaton[i]);
 		Utility.printAutomaton(unionActionsAutomaton,"DoubleMurphy/unionActionsAutomaton.gv");
 		System.out.println("computed: unionActionsAutomaton");
 		timingHandler.add("Union of Actions Automaton Computation",System.currentTimeMillis());

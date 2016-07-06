@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by loren on 04/07/2016.
+ * Extension of the PartitionedDomain used to get the domain as Proposition and not LTLfLocalVar
  */
 public class PropositionDomain extends PartitionedDomain {
 	public PropositionDomain(PropositionSet environmentDomain, PropositionSet systemDomain) {

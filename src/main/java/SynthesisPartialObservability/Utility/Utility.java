@@ -43,8 +43,6 @@ public class Utility {
         }else if (method == METHOD_CREATE){
             //method 2: creation of a new automata from existing one
             Set<State> states = automaton.states();
-            Set<State> initials = automaton.initials();
-            Set<State> terminals = automaton.terminals();
 
             result = new Automaton();
 

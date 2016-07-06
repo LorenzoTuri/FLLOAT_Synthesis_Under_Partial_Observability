@@ -1,6 +1,6 @@
 package SynthesisPartialObservability;
 
-import SynthesisPartialObservability.Utility.FormulaChoser;
+import SynthesisPartialObservability.Utility.FormulaChooser;
 import SynthesisPartialObservability.Utility.Utility;
 import antlr4_generated.LDLfFormulaParserLexer;
 import antlr4_generated.LDLfFormulaParserParser;
@@ -19,20 +19,20 @@ import visitors.LDLfVisitors.LDLfVisitor;
 import visitors.LTLfVisitors.LTLfVisitor;
 
 /**
- * Created by loren on 15/06/2016.
+ * Class used to create an Automaton, using methods from FLLOAT.
  */
 public class AutomatonCreation {
-    public static final int FORMULALTLf= FormulaChoser.FORMULALTLf;
-    public static final int FORMULALDLf= FormulaChoser.FORMULALDLf;
+    public static final int FORMULALTLf= FormulaChooser.FORMULALTLf;
+    public static final int FORMULALDLf= FormulaChooser.FORMULALDLf;
 
-    String input;
-    PropositionalSignature signature;
-    boolean declare;
-    boolean minimize;
-    boolean trim;
-    boolean noEmptyTrace;
-    boolean printing;
-	int formulatype;
+    private String input;
+    private PropositionalSignature signature;
+    private boolean declare;
+    private boolean minimize;
+    private boolean trim;
+    private boolean noEmptyTrace;
+    private boolean printing;
+	private int formulatype;
 
     /**
      * Constructor of the class. Stores config variables for successive use
@@ -59,7 +59,7 @@ public class AutomatonCreation {
     }
 
 	public Automaton getAutomaton(){
-		Automaton automaton = null;
+		Automaton automaton;
 
 		LDLfFormula formula;
 		if (formulatype == FORMULALDLf){

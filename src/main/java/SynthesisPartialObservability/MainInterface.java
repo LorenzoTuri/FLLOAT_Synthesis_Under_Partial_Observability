@@ -9,12 +9,13 @@
 package SynthesisPartialObservability;
 
 import SynthesisPartialObservability.Timer.TimingHandler;
-import SynthesisPartialObservability.Utility.FormulaChoser;
+import SynthesisPartialObservability.Utility.FormulaChooser;
 import SynthesisPartialObservability.Utility.PropositionDomain;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import rationals.Automaton;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Class used to run the program, not necessary to the project
@@ -23,33 +24,33 @@ public class MainInterface {
 	public Automaton automaton;
 
     //CONFIGURATION PART
-    public boolean declare = false;        //TODO non so che faccia
-    public boolean minimize = true;        //minimize the automa as much as possible
-    public boolean trim = false;           //TODO non so che faccia
-    public boolean noEmptyTrace = false;   //TODO non so che faccia
-    public boolean printing = true;        //printAutomaton of the automa on file with DOT format
+    private boolean declare = false;        //TODO non so che faccia
+    private boolean minimize = true;        //minimize the automa as much as possible
+    private boolean trim = false;           //TODO non so che faccia
+    private boolean noEmptyTrace = false;   //TODO non so che faccia
+    private boolean printing = true;        //printAutomaton of the automa on file with DOT format
 
     //VARIABLES
-    public PropositionalSignature signature = null;        //per ora non serve a niente
-    public FormulaChoser formulaChoser = new FormulaChoser();
-    //public Domain domain = new Domain(formulaChoser.input,formulaChoser.X,formulaChoser.Y,formulaChoser.formulaType);
-	public PropositionDomain domain = new PropositionDomain(formulaChoser.X,formulaChoser.Y);
-    public String input = formulaChoser.input;
-    public int formulaType = formulaChoser.formulaType;
+    private PropositionalSignature signature = null;        //per ora non serve a niente
+    private FormulaChooser formulaChooser = new FormulaChooser();
+    //public Domain domain = new Domain(formulaChooser.input,formulaChooser.X,formulaChooser.Y,formulaChooser.formulaType);
+	private PropositionDomain domain = new PropositionDomain(formulaChooser.X, formulaChooser.Y);
+    private String input = formulaChooser.input;
+    private int formulaType = formulaChooser.formulaType;
 
     public MainInterface() {
 	    TimingHandler timingHandler = new TimingHandler();
 
 	    long millis = System.currentTimeMillis();
-	    Date date = new Date(millis);
+	    GregorianCalendar date = new GregorianCalendar();
 	    timingHandler.add("InitialTimeMillis",millis);
-	    timingHandler.add("Exact initial time(HH)",date.getHours());
-	    timingHandler.add("Exact initial time(MM)",date.getMinutes());
-	    timingHandler.add("Exact initial time(SS)",date.getSeconds());
+	    timingHandler.add("Exact initial time(HH)",date.get(Calendar.HOUR));
+	    timingHandler.add("Exact initial time(MM)",date.get(Calendar.MINUTE));
+	    timingHandler.add("Exact initial time(SS)",date.get(Calendar.SECOND));
 	    timingHandler.add("Exact initial time(Millis)", millis%1000);
 
 	    System.out.println("MainInterface beginning");
-	    System.out.println(formulaChoser);
+	    System.out.println(formulaChooser);
 
 	    //Creation of the automa, starting from a formula
 	    automaton = (new AutomatonCreation(
@@ -80,9 +81,9 @@ public class MainInterface {
 	    System.out.println("\n\n\n--------------------------------SUMMARY------------------------------------");
 	    long initialTimeMillis = timingHandler.get().get(0).time;
 	    System.out.println("Initial time: ");
-	    System.out.println("\t"+timingHandler.get().get(1));
-	    System.out.println("\t"+timingHandler.get().get(2));
-	    System.out.println("\t"+timingHandler.get().get(3));
+	    System.out.println("\tExact initial time(HH.MM.SS): "+timingHandler.get().get(1).time+"."+"" +
+			    timingHandler.get().get(2).time+"."+
+	            timingHandler.get().get(3).time);
 	    System.out.println("\t"+timingHandler.get().get(4));
 	    System.out.println(timingHandler.get().get(5).description+": "+(timingHandler.get().get(5).time-initialTimeMillis));
 	    System.out.println(timingHandler.get().get(6).description+": "+(timingHandler.get().get(6).time-initialTimeMillis));
@@ -90,6 +91,5 @@ public class MainInterface {
     }
     public static void main(String[] args) {
         new MainInterface();
-        return;
     }
 }

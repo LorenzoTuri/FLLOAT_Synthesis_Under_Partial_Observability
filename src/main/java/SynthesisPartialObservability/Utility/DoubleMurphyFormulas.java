@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by loren on 30/06/2016.
+ * Container for formulas describing Double Murphy problem.
  */
 public class DoubleMurphyFormulas {
 	private String init;
