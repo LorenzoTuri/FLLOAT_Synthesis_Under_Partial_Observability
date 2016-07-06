@@ -8,6 +8,7 @@
 
 package SynthesisPartialObservability;
 
+import SynthesisPartialObservability.Timer.TimingHandler;
 import SynthesisPartialObservability.Utility.FormulaChoser;
 import SynthesisPartialObservability.Utility.PropositionDomain;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
@@ -26,7 +27,7 @@ public class MainInterface {
     public boolean minimize = true;        //minimize the automa as much as possible
     public boolean trim = false;           //TODO non so che faccia
     public boolean noEmptyTrace = false;   //TODO non so che faccia
-    public boolean printing = true;        //print of the automa on file with DOT format
+    public boolean printing = true;        //printAutomaton of the automa on file with DOT format
 
     //VARIABLES
     public PropositionalSignature signature = null;        //per ora non serve a niente
@@ -37,41 +38,54 @@ public class MainInterface {
     public int formulaType = formulaChoser.formulaType;
 
     public MainInterface() {
+	    TimingHandler timingHandler = new TimingHandler();
+
 	    long millis = System.currentTimeMillis();
 	    Date date = new Date(millis);
-	    System.out.println("Exact initial time (HH,MM,SS,mil)-> "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+":"+millis%1000);
+	    timingHandler.add("InitialTimeMillis",millis);
+	    timingHandler.add("Exact initial time(HH)",date.getHours());
+	    timingHandler.add("Exact initial time(MM)",date.getMinutes());
+	    timingHandler.add("Exact initial time(SS)",date.getSeconds());
+	    timingHandler.add("Exact initial time(Millis)", millis%1000);
+
+	    System.out.println("MainInterface beginning");
 	    System.out.println(formulaChoser);
 
-	    long startTime = System.nanoTime();
 	    //Creation of the automa, starting from a formula
-	    if (formulaType == formulaChoser.FORMULALTLf) {
-		    automaton = (new AutomatonCreation(input,
-				    signature, declare, minimize,
-				    trim, noEmptyTrace, printing)).getAutomatonLTLf();
+	    automaton = (new AutomatonCreation(
+			    input,
+			    signature,
+			    declare,
+			    minimize,
+			    trim,
+			    noEmptyTrace,
+			    printing,
+			    formulaType)).getAutomaton();
 
-	    } else if (formulaType == formulaChoser.FORMULALDLf) {
-		    automaton = (new AutomatonCreation(input,
-				    signature, declare, minimize,
-				    trim, noEmptyTrace, printing)).getAutomatonLDLf();
+	    assert automaton != null;
+	    System.out.println("Automaton created");
 
-	    } else return;
-
-	    System.out.println("Automata creation time: " +
-			    (System.nanoTime() - startTime) + " ns, = " +
-			    (System.nanoTime() - startTime) / 1000000 + " ms");
+		timingHandler.add("Automata creation time(Millis)",System.currentTimeMillis());
 	    //Compute the synthesis of the partial observability winning solution
-	    startTime = System.nanoTime();
-	    System.out.println("Partial solution computing time: " +
-			    (System.nanoTime() - startTime) + " ns, = " +
-			    (System.nanoTime() - startTime) / 1000000 + " ms");
-
 	    SynthesisPartialObservability synthesisPartialObservability = new SynthesisPartialObservability(
 			    automaton,
 			    domain,
 			    true);
 	    boolean result = synthesisPartialObservability.solve();
+	    System.out.println("Solution Computed");
 
+	    timingHandler.add("PartialSolution Computing Time(Millis)",System.currentTimeMillis());
 	    System.out.println((result ? "there is " : "there isn't ") + "a always winning solution");
+
+	    System.out.println("\n\n\n--------------------------------SUMMARY------------------------------------");
+	    long initialTimeMillis = timingHandler.get().get(0).time;
+	    System.out.println("Initial time: ");
+	    System.out.println("\t"+timingHandler.get().get(1));
+	    System.out.println("\t"+timingHandler.get().get(2));
+	    System.out.println("\t"+timingHandler.get().get(3));
+	    System.out.println("\t"+timingHandler.get().get(4));
+	    System.out.println(timingHandler.get().get(5).description+": "+(timingHandler.get().get(5).time-initialTimeMillis));
+	    System.out.println(timingHandler.get().get(6).description+": "+(timingHandler.get().get(6).time-initialTimeMillis));
 
     }
     public static void main(String[] args) {

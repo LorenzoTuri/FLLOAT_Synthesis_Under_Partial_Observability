@@ -1,7 +1,8 @@
 package SynthesisPartialObservability;
 
+import SynthesisPartialObservability.Timer.DataContainer;
+import SynthesisPartialObservability.Timer.TimingHandler;
 import SynthesisPartialObservability.Utility.DoubleMurphyFormulas;
-import SynthesisPartialObservability.Utility.TimingHandler;
 import SynthesisPartialObservability.Utility.Utility;
 import rationals.Automaton;
 import rationals.transformations.Mix;
@@ -53,10 +54,11 @@ public class DoubleMurphyMainInterface {
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false   //printing
-		)).getAutomatonLTLf());
+				false,   //printing
+				AutomatonCreation.FORMULALTLf
+		)).getAutomaton());
 		//initAutomaton = (new Reducer<>()).transform(initAutomaton);
-		Utility.print(initAutomaton,"DoubleMurphy/initAutomaton.gv");
+		Utility.printAutomaton(initAutomaton,"DoubleMurphy/initAutomaton.gv");
 		System.out.println("created: initAutomaton");
 		timingHandler.add("Init Automaton Creation",System.currentTimeMillis());
 
@@ -68,10 +70,11 @@ public class DoubleMurphyMainInterface {
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false   //printing
-		)).getAutomatonLTLf();
+				false,   //printing
+				AutomatonCreation.FORMULALTLf
+		)).getAutomaton();
 		//exclusionAutomaton = (new Reducer<>()).transform(exclusionAutomaton);
-		Utility.print(exclusionAutomaton,"DoubleMurphy/exclusionAutomaton.gv");
+		Utility.printAutomaton(exclusionAutomaton,"DoubleMurphy/exclusionAutomaton.gv");
 		System.out.println("created: exclusionAutomaton");
 		timingHandler.add("Exclusion Automaton Creation",System.currentTimeMillis());
 
@@ -85,11 +88,12 @@ public class DoubleMurphyMainInterface {
 					true,   //minimize
 					false,  //trim
 					false,  //noEmptyTrace
-					false   //printing
-			)).getAutomatonLTLf();
-			//Utility.print(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-AutomatonNoReduction.gv");
+					false,   //printing
+					AutomatonCreation.FORMULALTLf
+			)).getAutomaton();
+			//Utility.printAutomaton(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-AutomatonNoReduction.gv");
 			//actionsAutomaton[i] = (new Reducer<>()).transform(actionsAutomaton[i]);
-			Utility.print(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-Automaton.gv");
+			Utility.printAutomaton(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-Automaton.gv");
 			System.out.println("created: actionsAutomaton["+i+"]");
 			timingHandler.add("Action["+i+"] Automaton Creation",System.currentTimeMillis());
 		}
@@ -103,10 +107,11 @@ public class DoubleMurphyMainInterface {
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false   //printing
-		)).getAutomatonLTLf();
+				false,   //printing
+				AutomatonCreation.FORMULALTLf
+		)).getAutomaton();
 		//trueAutomaton = (new Reducer<>()).transform(trueAutomaton);
-		Utility.print(trueAutomaton,"DoubleMurphy/trueAutomaton.gv");
+		Utility.printAutomaton(trueAutomaton,"DoubleMurphy/trueAutomaton.gv");
 		System.out.println("created: trueAutomaton");
 		timingHandler.add("True Automaton Creation",System.currentTimeMillis());
 
@@ -118,10 +123,11 @@ public class DoubleMurphyMainInterface {
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false   //printing
-		)).getAutomatonLTLf();
+				false,   //printing
+				AutomatonCreation.FORMULALTLf
+		)).getAutomaton();
 		//objectivesAutomaton = (new Reducer<>()).transform(objectivesAutomaton);
-		Utility.print(objectivesAutomaton,"DoubleMurphy/objectivesAutomaton.gv");
+		Utility.printAutomaton(objectivesAutomaton,"DoubleMurphy/objectivesAutomaton.gv");
 		System.out.println("created: objectivesAutomaton");
 		timingHandler.add("Objectives Automaton Creation",System.currentTimeMillis());
 
@@ -129,26 +135,26 @@ public class DoubleMurphyMainInterface {
 		Automaton unionActionsAutomaton = actionsAutomaton[0];
 		for (int i = 1;i<actionsAutomaton.length;i++)
 			unionActionsAutomaton = (new Union<>()).transform(unionActionsAutomaton,actionsAutomaton[i]);
-		Utility.print(unionActionsAutomaton,"DoubleMurphy/unionActionsAutomaton.gv");
+		Utility.printAutomaton(unionActionsAutomaton,"DoubleMurphy/unionActionsAutomaton.gv");
 		System.out.println("computed: unionActionsAutomaton");
 		timingHandler.add("Union of Actions Automaton Computation",System.currentTimeMillis());
 
 		//Computing intersection between actions and exclusions.
 		Automaton mixedActionsExclusionsAutomaton = (new Mix<>()).transform(unionActionsAutomaton,exclusionAutomaton);
-		Utility.print(mixedActionsExclusionsAutomaton,"DoubleMurphy/mixedActionsExsclusionsAutomaton.gv");
+		Utility.printAutomaton(mixedActionsExclusionsAutomaton,"DoubleMurphy/mixedActionsExsclusionsAutomaton.gv");
 		System.out.println("computed: mixedActionsExclusionsAutomaton");
 		timingHandler.add("Mixing between Action and Exclusion Automaton Computation",System.currentTimeMillis());
 
 		//Computing "body part" of the formula (union of mixedActionsEsclusionsAutomaton and trueAutomaton)
 		Automaton bodyAutomaton = (new Union<>()).transform(mixedActionsExclusionsAutomaton,trueAutomaton);
-		Utility.print(bodyAutomaton,"DoubleMurphy/bodyAutomaton.gv");
+		Utility.printAutomaton(bodyAutomaton,"DoubleMurphy/bodyAutomaton.gv");
 		System.out.println("computed: bodyAutomaton");
 		timingHandler.add("Body Formulas Automaton Computation",System.currentTimeMillis());
 
 		//Computing intersection (MIX) of initialization, body and objectives automaton
 		Automaton completeAutomaton = (new Mix<>()).transform(initAutomaton,bodyAutomaton);
 		completeAutomaton = (new Mix<>()).transform(completeAutomaton,objectivesAutomaton);
-		Utility.print(completeAutomaton,"DoubleMurphy/completeAutomaton.gv");
+		Utility.printAutomaton(completeAutomaton,"DoubleMurphy/completeAutomaton.gv");
 		System.out.println("computed: completeAutomaton");
 		timingHandler.add("Complete Automaton Computation",System.currentTimeMillis());
 
@@ -163,9 +169,9 @@ public class DoubleMurphyMainInterface {
 
 		//Summary of the timing.
 		System.out.println("\n\n\n---------------------------------  TIMING SUMMARY  -----------------------------------\n");
-		List<TimingHandler.DataContainer> timers = timingHandler.get();
+		List<DataContainer> timers = timingHandler.get();
 		long previousTime = StartingTime;
-		for (TimingHandler.DataContainer d:timers){
+		for (DataContainer d:timers){
 			System.out.println("\t"+d.description +"\n" +
 					"\t\tTime Elapsed (Millis) : "+(d.time-previousTime)+"\n" +
 					"\t\tTime Elapsed(Seconds) : "+((int)(d.time-previousTime)/1000)+"\n"+

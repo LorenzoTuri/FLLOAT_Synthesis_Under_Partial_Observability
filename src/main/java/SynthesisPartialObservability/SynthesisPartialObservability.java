@@ -1,9 +1,9 @@
 package SynthesisPartialObservability;
 
+import SynthesisPartialObservability.Utility.PropositionDomain;
 import SynthesisPartialObservability.Utility.Utility;
 import rationals.Automaton;
 import synthesis.SynthesisAutomaton;
-import synthesis.symbols.PartitionedDomain;
 
 /**
  * This class utilize the Utility class to compute the synthesis.
@@ -11,7 +11,7 @@ import synthesis.symbols.PartitionedDomain;
  */
 public class SynthesisPartialObservability {
     Automaton automaton;
-    PartitionedDomain domain;
+    PropositionDomain domain;
 	boolean printing;
 
 	//TODO add of various exceptions to this class, like NotFLLOATGeneratedAutomaException etc...
@@ -21,7 +21,7 @@ public class SynthesisPartialObservability {
      * @param domain the domain of the original formula
      * @param printOnFilePartialAutomaton automaton should be printed or not as partialAutomaton.gv
      */
-    public SynthesisPartialObservability(Automaton automaton, PartitionedDomain domain, boolean printOnFilePartialAutomaton){
+    public SynthesisPartialObservability(Automaton automaton, PropositionDomain domain, boolean printOnFilePartialAutomaton){
 	    this.printing = printOnFilePartialAutomaton;
         this.automaton = automaton;
         this.domain = domain;
@@ -44,8 +44,8 @@ public class SynthesisPartialObservability {
         automaton = Utility.determine(automaton);
         //negation of the automata
         automaton = Utility.negateAutomaton(automaton);
-	    //print on file
-	    if (printing) Utility.print(automaton,"partialAutomaton.gv");
+	    //printAutomaton on file
+	    if (printing) Utility.printAutomaton(automaton,"partialAutomaton.gv");
         //solution of the automa as a normal DFAGames
         SynthesisAutomaton synthesisAutomaton = new SynthesisAutomaton(automaton, domain);
         boolean result = synthesisAutomaton.isRealizable();

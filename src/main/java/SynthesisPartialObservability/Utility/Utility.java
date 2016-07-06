@@ -116,11 +116,11 @@ public class Utility {
     }
 
     /**
-     * Used to print the automaton in a given path
+     * Used to printAutomaton the automaton in a given path
      * @param automaton the automaton
      * @param path path
      */
-    public static void print(Automaton automaton,String path){
+    public static void printAutomaton(Automaton automaton, String path){
         FileOutputStream fos;
         try {
             fos = new FileOutputStream(path);

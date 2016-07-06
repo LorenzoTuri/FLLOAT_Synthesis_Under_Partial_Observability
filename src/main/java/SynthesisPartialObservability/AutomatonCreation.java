@@ -1,10 +1,9 @@
 package SynthesisPartialObservability;
 
+import SynthesisPartialObservability.Utility.FormulaChoser;
 import SynthesisPartialObservability.Utility.Utility;
 import antlr4_generated.LDLfFormulaParserLexer;
 import antlr4_generated.LDLfFormulaParserParser;
-import antlr4_generated.LTLfFormulaParserLexer;
-import antlr4_generated.LTLfFormulaParserParser;
 import formula.ldlf.LDLfFormula;
 import formula.ltlf.LTLfFormula;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
@@ -21,6 +20,9 @@ import visitors.LTLfVisitors.LTLfVisitor;
  * Created by loren on 15/06/2016.
  */
 public class AutomatonCreation {
+    public static final int FORMULALTLf= FormulaChoser.FORMULALTLf;
+    public static final int FORMULALDLf= FormulaChoser.FORMULALDLf;
+
     String input;
     PropositionalSignature signature;
     boolean declare;
@@ -28,6 +30,7 @@ public class AutomatonCreation {
     boolean trim;
     boolean noEmptyTrace;
     boolean printing;
+	int formulatype;
 
     /**
      * Constructor of the class. Stores config variables for successive use
@@ -37,11 +40,12 @@ public class AutomatonCreation {
      * @param minimize      minimization of the automaton
      * @param trim          TODO don't know
      * @param noEmptyTrace  TODO don't know
-     * @param printing      print the automaton in a DOT file (.gv)
+     * @param printing      printAutomaton the automaton in a DOT file (.gv)
+     * @param FormulaType   type of formula between FORMULALTLf or FORMULALDLf
      */
     AutomatonCreation(
             String input, PropositionalSignature signature, boolean declare,
-            boolean minimize, boolean trim, boolean noEmptyTrace, boolean printing){
+            boolean minimize, boolean trim, boolean noEmptyTrace, boolean printing, int FormulaType){
         this.input = input;
         this.signature = signature;
         this.declare = declare;
@@ -49,50 +53,34 @@ public class AutomatonCreation {
         this.trim = trim;
         this.noEmptyTrace = noEmptyTrace;
         this.printing= printing;
+	    this.formulatype = FormulaType;
     }
 
-    /**
-     * Create the automaton from a LTLf formula. Error is the formula isn't LTLf
-     * @return the automaton
-     */
-    public Automaton getAutomatonLTLf() {
-        LTLfFormulaParserLexer lexer = new LTLfFormulaParserLexer(new ANTLRInputStream(input));
-        LTLfFormulaParserParser parser = new LTLfFormulaParserParser(new CommonTokenStream(lexer));
-        ParseTree tree = parser.expression();
-        LTLfVisitor visitor = new LTLfVisitor();
-        LTLfFormula formula = visitor.visit(tree);
+	public Automaton getAutomaton(){
+		Automaton automaton = null;
+		LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
+		LDLfFormulaParserParser parser = new LDLfFormulaParserParser(new CommonTokenStream(lexer));
+		ParseTree tree = parser.expression();
 
-        LTLfFormula antinnfFormula = formula.antinnf();
-        LDLfFormula ldlff = antinnfFormula.toLDLf();
+		LDLfFormula formula;
+		if (formulatype == FORMULALDLf){
+			LDLfVisitor visitor = new LDLfVisitor();
+			formula = visitor.visit(tree);
 
-        PropositionalSignature usedSignature = (signature==null? formula.getSignature() : signature);
+		}else if (formulatype == FORMULALTLf){
+			LTLfVisitor visitor = new LTLfVisitor();
+			LTLfFormula ltlfFormula = visitor.visit(tree);
 
-        Automaton automaton = AutomatonUtils.ldlf2Automaton(ldlff, usedSignature);
+			LTLfFormula antinnfFormula = ltlfFormula.antinnf();
+			formula = antinnfFormula.toLDLf();
 
-        checkFlag(automaton,"ltlfAutomaton.gv");
+		}else return null;
 
-        return automaton;
-    }
-
-    /**
-     * Create the automaton from a LDLf formula. Error if the formula isn't LDLf
-     * @return the automaton
-     */
-    public Automaton getAutomatonLDLf() {
-        LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
-        LDLfFormulaParserParser parser = new LDLfFormulaParserParser(new CommonTokenStream(lexer));
-        ParseTree tree = parser.expression();
-
-        LDLfVisitor visitor = new LDLfVisitor();
-        LDLfFormula formula = visitor.visit(tree);
-
-	    PropositionalSignature usedSignature = (signature==null? new PropositionalSignature() : signature);
-
-        Automaton automaton = AutomatonUtils.ldlf2Automaton(formula, usedSignature);
-        checkFlag(automaton,"ldlfAutomaton.gv");
-
-        return automaton;
-    }
+		PropositionalSignature usedSignature = (signature==null? formula.getSignature() : signature);
+		automaton = AutomatonUtils.ldlf2Automaton(formula, usedSignature);
+		checkFlag(automaton, (formulatype==FORMULALTLf? "ltlfAutomaton.gv" : "ldlfAutomaton.gv"));
+		return automaton;
+	}
 
     /**
      * Checks configuration flag
@@ -104,6 +92,6 @@ public class AutomatonCreation {
         if (minimize) automaton = new Reducer<>().transform(automaton);
         if (trim);
         if (noEmptyTrace);
-        if (printing) Utility.print(automaton,printingPath);
+        if (printing) Utility.printAutomaton(automaton,printingPath);
     }
 }

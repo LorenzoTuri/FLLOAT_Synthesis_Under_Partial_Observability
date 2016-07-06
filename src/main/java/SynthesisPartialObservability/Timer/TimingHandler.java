@@ -1,4 +1,4 @@
-package SynthesisPartialObservability.Utility;
+package SynthesisPartialObservability.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +24,13 @@ public class TimingHandler {
 		return data;
 	}
 
-	public class DataContainer{
-		public String description;
-		public long time;
+	public String toString(){
+		String result = "";
+		for (DataContainer d:get()){
+			result.concat(d.toString()+"\n");
+		}
+
+		return result;
 	}
+
 }
