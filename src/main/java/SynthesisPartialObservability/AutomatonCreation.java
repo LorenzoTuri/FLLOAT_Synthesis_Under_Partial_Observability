@@ -4,6 +4,8 @@ import SynthesisPartialObservability.Utility.FormulaChoser;
 import SynthesisPartialObservability.Utility.Utility;
 import antlr4_generated.LDLfFormulaParserLexer;
 import antlr4_generated.LDLfFormulaParserParser;
+import antlr4_generated.LTLfFormulaParserLexer;
+import antlr4_generated.LTLfFormulaParserParser;
 import formula.ldlf.LDLfFormula;
 import formula.ltlf.LTLfFormula;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
@@ -58,16 +60,20 @@ public class AutomatonCreation {
 
 	public Automaton getAutomaton(){
 		Automaton automaton = null;
-		LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
-		LDLfFormulaParserParser parser = new LDLfFormulaParserParser(new CommonTokenStream(lexer));
-		ParseTree tree = parser.expression();
 
 		LDLfFormula formula;
 		if (formulatype == FORMULALDLf){
+			LDLfFormulaParserLexer lexer = new LDLfFormulaParserLexer(new ANTLRInputStream(input));
+			LDLfFormulaParserParser parser = new LDLfFormulaParserParser(new CommonTokenStream(lexer));
+			ParseTree tree = parser.expression();
+
 			LDLfVisitor visitor = new LDLfVisitor();
 			formula = visitor.visit(tree);
 
 		}else if (formulatype == FORMULALTLf){
+			LTLfFormulaParserLexer lexer = new LTLfFormulaParserLexer(new ANTLRInputStream(input));
+			LTLfFormulaParserParser parser = new LTLfFormulaParserParser(new CommonTokenStream(lexer));
+			ParseTree tree = parser.expression();
 			LTLfVisitor visitor = new LTLfVisitor();
 			LTLfFormula ltlfFormula = visitor.visit(tree);
 
@@ -78,7 +84,8 @@ public class AutomatonCreation {
 
 		PropositionalSignature usedSignature = (signature==null? formula.getSignature() : signature);
 		automaton = AutomatonUtils.ldlf2Automaton(formula, usedSignature);
-		checkFlag(automaton, (formulatype==FORMULALTLf? "ltlfAutomaton.gv" : "ldlfAutomaton.gv"));
+
+		checkFlag(automaton,(formulatype==FORMULALTLf?"ltlfAutomaton.gv":"ldlfAutomaton.gv"));
 		return automaton;
 	}
 
