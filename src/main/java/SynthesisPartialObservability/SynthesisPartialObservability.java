@@ -45,9 +45,9 @@ public class SynthesisPartialObservability {
         //negation of the automata
         automaton = Utility.negateAutomaton(automaton);
 	    //printAutomaton on file
-	    if (printing) Utility.printAutomaton(automaton,"partialAutomaton.gv");
+	    if (printing) Utility.printAutomaton(automaton,"Automatons/PartialAutomaton.gv");
         //solution of the automa as a normal DFAGames
-        SynthesisAutomaton synthesisAutomaton = new SynthesisAutomaton(automaton, domain);
+        SynthesisAutomaton synthesisAutomaton = new SynthesisAutomaton(domain,automaton);
         boolean result = synthesisAutomaton.isRealizable();
         //boolean result = Utility.solveDFAGames(automaton,domain);
         //reset of backup copy

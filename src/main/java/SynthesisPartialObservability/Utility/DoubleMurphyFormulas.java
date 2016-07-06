@@ -1,9 +1,7 @@
 package SynthesisPartialObservability.Utility;
 
-import formula.ltlf.LTLfLocalVar;
 import net.sf.tweety.logics.pl.syntax.Proposition;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
-import synthesis.symbols.PropositionSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,17 +56,17 @@ public class DoubleMurphyFormulas {
 		getSignature().add(new Proposition("movelaction"));
 		getSignature().add(new Proposition("moveraction"));
 
-		PropositionSet environment = new PropositionSet();
-		PropositionSet agent = new PropositionSet();
-		environment.add(new LTLfLocalVar("cleanl"));
-		environment.add(new LTLfLocalVar("cleanr"));
-		environment.add(new LTLfLocalVar("isonl"));
-		environment.add(new LTLfLocalVar("isonr"));
-		agent.add(new LTLfLocalVar("movelaction"));
-		agent.add(new LTLfLocalVar("moveraction"));
-		agent.add(new LTLfLocalVar("cleanlaction"));
-		agent.add(new LTLfLocalVar("cleanraction"));
-		domain = new PropositionDomain(environment,agent);
+		PropositionalSignature environment = new PropositionalSignature();
+		PropositionalSignature agent = new PropositionalSignature();
+		environment.add(new Proposition("cleanl"));
+		environment.add(new Proposition("cleanr"));
+		environment.add(new Proposition("isonl"));
+		environment.add(new Proposition("isonr"));
+		agent.add(new Proposition("movelaction"));
+		agent.add(new Proposition("moveraction"));
+		agent.add(new Proposition("cleanlaction"));
+		agent.add(new Proposition("cleanraction"));
+		domain = new PropositionDomain(environment,agent,new PropositionalSignature());
 	}
 
 	public String getInit() {

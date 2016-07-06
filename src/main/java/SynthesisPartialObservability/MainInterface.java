@@ -11,6 +11,8 @@ package SynthesisPartialObservability;
 import SynthesisPartialObservability.Timer.TimingHandler;
 import SynthesisPartialObservability.Utility.FormulaChooser;
 import SynthesisPartialObservability.Utility.PropositionDomain;
+import SynthesisPartialObservability.Utility.Utility;
+import main.Main;
 import net.sf.tweety.logics.pl.syntax.PropositionalSignature;
 import rationals.Automaton;
 
@@ -27,14 +29,17 @@ public class MainInterface {
     private boolean declare = false;        //TODO non so che faccia
     private boolean minimize = true;        //minimize the automa as much as possible
     private boolean trim = false;           //TODO non so che faccia
-    private boolean noEmptyTrace = false;   //TODO non so che faccia
-    private boolean printing = true;        //printAutomaton of the automa on file with DOT format
+    private boolean noEmptyTrace = true;    //deleting of "EmptyTrace" transition from the automaton
+    private boolean printing = false;       //print of the automaton on console
+
+	private boolean printOnFileAutomaton = true;
+	private boolean printOnFilePartialAutomaton = true;
 
     //VARIABLES
     private PropositionalSignature signature = null;        //per ora non serve a niente
     private FormulaChooser formulaChooser = new FormulaChooser();
     //public Domain domain = new Domain(formulaChooser.input,formulaChooser.X,formulaChooser.Y,formulaChooser.formulaType);
-	private PropositionDomain domain = new PropositionDomain(formulaChooser.X, formulaChooser.Y);
+	private PropositionDomain domain = new PropositionDomain(formulaChooser.X, formulaChooser.Y, formulaChooser.hidden);
     private String input = formulaChooser.input;
     private int formulaType = formulaChooser.formulaType;
 
@@ -53,30 +58,46 @@ public class MainInterface {
 	    System.out.println(formulaChooser);
 
 	    //Creation of the automa, starting from a formula
-	    automaton = (new AutomatonCreation(
-			    input,
-			    signature,
-			    declare,
-			    minimize,
-			    trim,
-			    noEmptyTrace,
-			    printing,
-			    formulaType)).getAutomaton();
+	    if (formulaType == formulaChooser.FORMULALDLf)
+		    automaton = (Main.ldlfString2Aut(
+				    input,
+				    signature,
+				    declare,
+				    minimize,
+				    trim,
+				    noEmptyTrace,
+				    printing
+		    )).getAutomaton();
+	    else if (formulaType == formulaChooser.FORMULALTLf)
+		    automaton = (Main.ltlfString2Aut(
+				    input,
+				    signature,
+				    declare,
+				    minimize,
+				    trim,
+				    noEmptyTrace,
+				    printing
+		    )).getAutomaton();
 
 	    assert automaton != null;
 	    System.out.println("Automaton created");
 
 		timingHandler.add("Automata creation time(Millis)",System.currentTimeMillis());
+
 	    //Compute the synthesis of the partial observability winning solution
+	    Utility.printAutomaton(automaton,"Automatons/OriginalAutomaton.gv");
 	    SynthesisPartialObservability synthesisPartialObservability = new SynthesisPartialObservability(
 			    automaton,
 			    domain,
-			    true);
+			    printOnFilePartialAutomaton);
 	    boolean result = synthesisPartialObservability.solve();
 	    System.out.println("Solution Computed");
 
 	    timingHandler.add("PartialSolution Computing Time(Millis)",System.currentTimeMillis());
 	    System.out.println((result ? "there is " : "there isn't ") + "a always winning solution");
+
+
+
 
 	    System.out.println("\n\n\n--------------------------------SUMMARY------------------------------------");
 	    long initialTimeMillis = timingHandler.get().get(0).time;

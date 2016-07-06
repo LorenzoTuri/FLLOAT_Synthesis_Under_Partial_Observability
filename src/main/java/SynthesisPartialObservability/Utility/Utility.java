@@ -78,7 +78,7 @@ public class Utility {
 	    } else if (transition.label() instanceof PossibleWorld) {
 		    //transition can have elements not contained in the domain.
 		    PossibleWorld pw = (PossibleWorld) transition.label();
-            pw.retainAll(domain.getCompleteDomainAsPropositions());
+            pw.removeAll(domain.getHiddenProposition());
 		    return (TransitionLabel) pw;
 	    }
 	    return null;

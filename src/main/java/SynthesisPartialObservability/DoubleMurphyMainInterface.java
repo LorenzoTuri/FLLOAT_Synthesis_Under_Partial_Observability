@@ -4,6 +4,7 @@ import SynthesisPartialObservability.Timer.DataContainer;
 import SynthesisPartialObservability.Timer.TimingHandler;
 import SynthesisPartialObservability.Utility.DoubleMurphyFormulas;
 import SynthesisPartialObservability.Utility.Utility;
+import main.Main;
 import rationals.Automaton;
 import rationals.transformations.Mix;
 import rationals.transformations.Union;
@@ -47,31 +48,29 @@ public class DoubleMurphyMainInterface {
 		DoubleMurphyFormulas formulas = new DoubleMurphyFormulas();
 
 		//Creation of the automaton with the initialization formula
-		Automaton initAutomaton = ((new AutomatonCreation(
+		Automaton initAutomaton = (Main.ltlfString2Aut(
 				formulas.getInit(),
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false,   //printing
-				AutomatonCreation.FORMULALTLf
-		)).getAutomaton());
+				false   //printing
+		)).getAutomaton();
 		//initAutomaton = (new Reducer<>()).transform(initAutomaton);
 		Utility.printAutomaton(initAutomaton,"DoubleMurphy/initAutomaton.gv");
 		System.out.println("created: initAutomaton");
 		timingHandler.add("Init Automaton Creation",System.currentTimeMillis());
 
 		//Creation of the automaton with the exclusion formula
-		Automaton exclusionAutomaton = (new AutomatonCreation(
+		Automaton exclusionAutomaton = (Main.ltlfString2Aut(
 				formulas.getExclusions(),
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false,   //printing
-				AutomatonCreation.FORMULALTLf
+				false   //printing
 		)).getAutomaton();
 		//exclusionAutomaton = (new Reducer<>()).transform(exclusionAutomaton);
 		Utility.printAutomaton(exclusionAutomaton,"DoubleMurphy/exclusionAutomaton.gv");
@@ -81,15 +80,14 @@ public class DoubleMurphyMainInterface {
 		//Creation of the automatons with the actions formulas
 		Automaton actionsAutomaton[] = new Automaton[formulas.getActions().size()];
 		for(int i = 0;i<formulas.getActions().size();i++){
-			actionsAutomaton[i] = (new AutomatonCreation(
+			actionsAutomaton[i] = (Main.ltlfString2Aut(
 					formulas.getActions().get(i),
 					formulas.getSignature(),
 					false,  //declare
 					true,   //minimize
 					false,  //trim
 					false,  //noEmptyTrace
-					false,   //printing
-					AutomatonCreation.FORMULALTLf
+					false   //printing
 			)).getAutomaton();
 			//Utility.printAutomaton(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-AutomatonNoReduction.gv");
 			//actionsAutomaton[i] = (new Reducer<>()).transform(actionsAutomaton[i]);
@@ -100,15 +98,14 @@ public class DoubleMurphyMainInterface {
 		timingHandler.add("Actions Automaton Completion",System.currentTimeMillis());
 
 		//Creation of the automaton with the "true" formula
-		Automaton trueAutomaton = (new AutomatonCreation(
+		Automaton trueAutomaton = (Main.ltlfString2Aut(
 				"true",
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false,   //printing
-				AutomatonCreation.FORMULALTLf
+				false   //printing
 		)).getAutomaton();
 		//trueAutomaton = (new Reducer<>()).transform(trueAutomaton);
 		Utility.printAutomaton(trueAutomaton,"DoubleMurphy/trueAutomaton.gv");
@@ -116,15 +113,14 @@ public class DoubleMurphyMainInterface {
 		timingHandler.add("True Automaton Creation",System.currentTimeMillis());
 
 		//Creation of the automaton with the objectives formula
-		Automaton objectivesAutomaton = (new AutomatonCreation(
+		Automaton objectivesAutomaton = (Main.ltlfString2Aut(
 				formulas.getObjective(),
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
 				false,  //noEmptyTrace
-				false,   //printing
-				AutomatonCreation.FORMULALTLf
+				false   //printing
 		)).getAutomaton();
 		//objectivesAutomaton = (new Reducer<>()).transform(objectivesAutomaton);
 		Utility.printAutomaton(objectivesAutomaton,"DoubleMurphy/objectivesAutomaton.gv");

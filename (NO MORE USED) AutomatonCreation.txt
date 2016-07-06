@@ -69,7 +69,6 @@ public class AutomatonCreation {
 
 			LDLfVisitor visitor = new LDLfVisitor();
 			formula = visitor.visit(tree);
-
 		}else if (formulatype == FORMULALTLf){
 			LTLfFormulaParserLexer lexer = new LTLfFormulaParserLexer(new ANTLRInputStream(input));
 			LTLfFormulaParserParser parser = new LTLfFormulaParserParser(new CommonTokenStream(lexer));
