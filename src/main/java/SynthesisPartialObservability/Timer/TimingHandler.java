@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by loren on 04/07/2016.
+ * Handler used to store information about the time.
+ * Can be used to store messages, along with the current time for a summary
  */
 public class TimingHandler {
 	private List<DataContainer> data;
