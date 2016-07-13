@@ -23,15 +23,15 @@ public class DoubleMurphyMainInterface2 {
 		/**
 		 * LTLf formulas used to generate a game world are made like this:
 		 * (G(regolemondo) && init && G(actions) && objectives) || !G(regolemondo)
-		 * 1. generare l'automa delle regole (G(regolemondo))
-		 * 2. generare l'automa init
-		 * 3. generare l'automa G(actions)
-		 * 4. generare l'automa objectives
-		 * 5. generare l'automa !G(regolemondo) (ovvero negare l'automa (1))
-		 * 6. usare la classe Mix per intersecare (1) con (2)
-		 * 7. usare la classe Mix per intersecare (6) con (3)
-		 * 8. usare la classe Mix per intersecare (7) con (4)
-		 * 9. usare la classe Union per unire (8) con (5)
+		 * 1. generate automa of rules (G(regolemondo))
+		 * 2. generate automa init
+		 * 3. generate automa G(actions)
+		 * 4. generate automa objectives
+		 * 5. generate automa !G(regolemondo) (negation of automa (1))
+		 * 6. use class Mix to intersect (1) with (2)
+		 * 7. use class Mix to intersect (6) with (3)
+		 * 8. use class Mix to intersect (7) with (4)
+		 * 9. use class Union to unify (8) with (5)
 		 * Solve the resulting automaton.
 		 * WARNING: use for every automaton the PropositionalSignature from class DoubleMurphyFormulas;
 		 *      it contains the right sign, with every proposition used in these formulas.
@@ -42,66 +42,66 @@ public class DoubleMurphyMainInterface2 {
 		Automaton rulesAutomaton = Main.ltlfString2Aut(
 				"G("+formulas.getRegolemondo()+")",
 				formulas.getSignature(),
-				false,
-				true,
-				false,
-				true,
-				false
+				false,  //declare
+				true,   //minimize
+				false,  //trim
+				true,   //noEmptyTrace
+				false   //printing
 		).getAutomaton();
 			Utility.printAutomaton(rulesAutomaton,"Automatons/rules automaton.gv");
-			Utility.printAutomatonOptimized(rulesAutomaton,"Automatons/[OPT]rules automaton.gv");
+			Utility.printOptimizedAutomaton(rulesAutomaton,"Automatons/[OPT]rules automaton.gv");
 		Automaton initAutomaton = Main.ltlfString2Aut(
 				formulas.getInit(),
 				formulas.getSignature(),
-				false,
-				true,
-				false,
-				true,
-				false
+				false,  //declare
+				true,   //minimize
+				false,  //trim
+				true,   //noEmptyTrace
+				false   //printing
 		).getAutomaton();
 			Utility.printAutomaton(initAutomaton,"Automatons/init automaton.gv");
-			Utility.printAutomatonOptimized(initAutomaton,"Automatons/[OPT]init automaton.gv");
+			Utility.printOptimizedAutomaton(initAutomaton,"Automatons/[OPT]init automaton.gv");
 		Automaton actionsAutomaton = Main.ltlfString2Aut(
 				"G("+formulas.getActions()+")",
 				formulas.getSignature(),
-				false,
-				true,
-				false,
-				true,
-				false
+				false,  //declare
+				true,   //minimize
+				false,  //trim
+				true,   //noEmptyTrace
+				false   //printing
 		).getAutomaton();
 			Utility.printAutomaton(actionsAutomaton,"Automatons/actions automaton.gv");
-			Utility.printAutomatonOptimized(actionsAutomaton,"Automatons/[OPT]actions automaton.gv");
+			Utility.printOptimizedAutomaton(actionsAutomaton,"Automatons/[OPT]actions automaton.gv");
 		Automaton objectivesAutomaton = Main.ltlfString2Aut(
 				formulas.getObjectives(),
 				formulas.getSignature(),
-				false,
-				true,
-				false,
-				true,
-				false
+				false,  //declare
+				true,   //minimize
+				false,  //trim
+				true,   //noEmptyTrace
+				false   //printing
 		).getAutomaton();
 			Utility.printAutomaton(objectivesAutomaton,"Automatons/objectives automaton.gv");
-			Utility.printAutomatonOptimized(objectivesAutomaton,"Automatons/[OPT]objectives automaton.gv");
+			Utility.printOptimizedAutomaton(objectivesAutomaton,"Automatons/[OPT]objectives automaton.gv");
 		Automaton negatedRulesAutomaton = Utility.negateAutomaton(rulesAutomaton);
 			Utility.printAutomaton(negatedRulesAutomaton,"Automatons/negated rules automaton.gv");
-			Utility.printAutomatonOptimized(negatedRulesAutomaton,"Automatons/[OPT]negated rules automaton.gv");
+			Utility.printOptimizedAutomaton(negatedRulesAutomaton,"Automatons/[OPT]negated rules automaton.gv");
 
 		Automaton sixAutomaton = (new Mix()).transform(rulesAutomaton,initAutomaton);
 			Utility.printAutomaton(sixAutomaton,"Automatons/first mix automaton.gv");
-			Utility.printAutomatonOptimized(sixAutomaton,"Automatons/[OPT]first mix automaton.gv");
+			Utility.printOptimizedAutomaton(sixAutomaton,"Automatons/[OPT]first mix automaton.gv");
 
 		Automaton sevenAutomaton = (new Mix()).transform(sixAutomaton,actionsAutomaton);
 			Utility.printAutomaton(sevenAutomaton,"Automatons/second mix automaton.gv");
-			Utility.printAutomatonOptimized(sevenAutomaton,"Automatons/[OPT]second mix automaton.gv");
+			Utility.printOptimizedAutomaton(sevenAutomaton,"Automatons/[OPT]second mix automaton.gv");
 
 		Automaton eigthAutomaton = (new Mix()).transform(sevenAutomaton,objectivesAutomaton);
 			Utility.printAutomaton(eigthAutomaton,"Automatons/third mix automaton.gv");
-			Utility.printAutomatonOptimized(eigthAutomaton,"Automatons/[OPT]third mix automaton.gv");
+			Utility.printOptimizedAutomaton(eigthAutomaton,"Automatons/[OPT]third mix automaton.gv");
 
 		Automaton completeAutomaton = (new Union<>()).transform(eigthAutomaton,negatedRulesAutomaton);
 			Utility.printAutomaton(completeAutomaton,"Automatons/complete automaton.gv");
-			Utility.printAutomatonOptimized(completeAutomaton,"Automatons/[OPT]complete automaton.gv");
+			Utility.printOptimizedAutomaton(completeAutomaton,"Automatons/[OPT]complete automaton.gv");
 
 		SynthesisPartialObservability synthesis = new SynthesisPartialObservability(
 				completeAutomaton,
