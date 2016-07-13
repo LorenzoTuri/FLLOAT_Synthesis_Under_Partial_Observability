@@ -168,7 +168,7 @@ public class Utility {
 
 		return result;
 	}
-	public static void printOptimizedAutomaton(Automaton automaton, String path){
+	public static void printOptimizedAutomaton(Automaton automaton,String path){
 		Automaton printingAutomaton = optimizeForPrintingAutomaton(automaton);
 		printAutomaton(printingAutomaton,path);
 	}
