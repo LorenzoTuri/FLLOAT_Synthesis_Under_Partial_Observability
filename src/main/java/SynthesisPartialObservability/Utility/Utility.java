@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -86,10 +87,11 @@ public class Utility {
 
     /**
      * Used to negate the automaton. A negated automaton is an automaton with inverted terminals
-     * @param automaton original automaton
+     * @param originalAutomaton original automaton
      * @return the modified automaton
      */
-    public static Automaton negateAutomaton(Automaton automaton){
+    public static Automaton negateAutomaton(Automaton originalAutomaton){
+        Automaton automaton = originalAutomaton.clone();
         Set<State> terminals = automaton.terminals();
         Set<State> negatedTerminals = new HashSet<>();
 
@@ -130,4 +132,44 @@ public class Utility {
             e.printStackTrace();
         }
     }
+
+	private static Automaton optimizeForPrintingAutomaton(Automaton automaton){
+		Automaton result = new Automaton();
+		Set<State> states = automaton.states();
+		Map<State,State> mapping = new HashMap<>();
+		for(State s:states) mapping.put(s,result.addState(s.isInitial(),s.isTerminal()));
+
+		for (int i = 0;i<states.toArray().length;i++){
+			State s = (State) states.toArray()[i];
+			for (int j = 0;j<states.toArray().length;j++){
+				State s2 = (State) states.toArray()[j];
+
+				Set<Transition> transitions = automaton.deltaFrom(s,s2);
+				Set<Set<Object>> transitionLabels = new HashSet<>();
+				Set<Object> transitionLabel = new HashSet<>();
+				int newline = 0;
+				for (Transition t : transitions) {
+					transitionLabel.add(t.label());
+					newline++;
+					if (newline % 5 == 0) {
+						transitionLabels.add(transitionLabel);
+						transitionLabel = new HashSet<>();
+					}
+				}
+				if (transitionLabel.size() > 0) transitionLabels.add(transitionLabel);
+				try {
+					for (Set<Object> transitionlab : transitionLabels)
+						result.addTransition(new Transition(mapping.get(s), transitionlab, mapping.get(s2)));
+				} catch (Exception e) {
+					System.err.println("ERROR IN ADD TRANSITION:"+e);
+				}
+			}
+		}
+
+		return result;
+	}
+	public static void printAutomatonOptimized(Automaton automaton, String path){
+		Automaton printingAutomaton = optimizeForPrintingAutomaton(automaton);
+		printAutomaton(printingAutomaton,path);
+	}
 }
