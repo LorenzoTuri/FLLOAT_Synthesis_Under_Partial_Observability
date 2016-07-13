@@ -7,27 +7,28 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
- * Created by loren on 13/07/2016.
+ * Class used to print various information about an automata on the console.
  */
 public class AutomatonConsole {
-	Automaton automaton;
+	private Automaton automaton;
 	public AutomatonConsole(Automaton automaton){this.automaton = automaton;}
 	public void start(){
 		boolean exitcommand = false;
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("\n\nInserisci 0 per uscire\n" +
-				"Inserisci 1 per stampare gli stati\n" +
-				"Inserisci 2 per stampare i terminali\n" +
-				"Inserisci 3 per stampare gli iniziali\n" +
-				"Inserisci 4 per stampare le transizioni\n" +
-				"Inserisci 5 per stampare le transizioni da due stati particolari\n" +
-				"Inserisci 6 per stampare le transizioni da uno stato\n" +
-				"Inserisci 7 per stampare le transizioni per uno stato");
+		System.out.println("\n\n" +
+				"Insert 0 to exit\n" +
+				"Insert 1 to print states\n" +
+				"Insert 2 to print terminals\n" +
+				"Insert 3 to print initials\n" +
+				"Insert 4 to print transitions\n" +
+				"Insert 5 to print transitions between two states\n" +
+				"Insert 6 to print transitions from a state");
 		while (!exitcommand){
 			int command=0;
 			try {
 				System.out.print("Command: ");
-				command = Integer.parseInt(reader.readLine());
+				String read = reader.readLine();
+				command = (isInteger(read) ? Integer.parseInt(read) : 10000);
 			} catch (Exception e) {e.getMessage();}
 			switch (command){
 				case 0: exitcommand=true;break;
@@ -36,31 +37,34 @@ public class AutomatonConsole {
 				case 3: System.out.println(automaton.initials());break;
 				case 4: for (Object t:automaton.delta()) System.out.println(t);break;
 				case 5: try{
-					System.out.println("Inserisci lo stato di partenza");
-					int state1 = Integer.parseInt(reader.readLine());
-					System.out.println("Inserisci lo stato di arrivo");
-					int state2 = Integer.parseInt(reader.readLine());
+					System.out.println("Insert starting state:");
+					String readstate = reader.readLine();
+					int state1 = (isInteger(readstate) ? Integer.parseInt(readstate) : 0);
+					System.out.println("Insert ending state:");
+					readstate = reader.readLine();
+					int state2 = (isInteger(readstate) ? Integer.parseInt(readstate) : 0);
 					for (Object t:automaton.deltaFrom(
 							(State)automaton.states().toArray()[state1],
 							(State)automaton.states().toArray()[state2]))
 						System.out.println(t);
-				}catch (Exception e){} break;
+				}catch (Exception e){System.err.println(e.getMessage());} break;
 				case 6:try {
-					System.out.println("Inserisci lo stato di partenza");
-					int state1 = Integer.parseInt(reader.readLine());
+					System.out.println("Insert starting state");
+					String readstate = reader.readLine();
+					int state1 = (isInteger(readstate) ? Integer.parseInt(readstate) : 0);
 					for (Object t:automaton.delta((State) automaton.states().toArray()[state1]))
 						System.out.println(t);
-				}catch (Exception e){} break;
-				case 7:try {
-					System.out.println("Inserisci lo stato di partenza");
-					int state1 = Integer.parseInt(reader.readLine());
-					for (Object t:automaton.deltaMinusOne((State) automaton.states().toArray()[state1]))
-						System.out.println(t);
-				}catch (Exception e){} break;
-				case 8:
-				case 9:
-				default: System.out.println("Il comando selezionato non è ancora stato inserito.");
+				}catch (Exception e){System.err.println(e.getMessage());} break;
+				default: System.out.println("Selected command isn't implemented yet.");
 			}
 		}
 	}
+
+	private static boolean isInteger(String s) {
+		try {Integer.parseInt(s);}
+		catch(NumberFormatException e) {return false;}
+		catch(NullPointerException e) {return false;}
+		return true;
+	}
+
 }
