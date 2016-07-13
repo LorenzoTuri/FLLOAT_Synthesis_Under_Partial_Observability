@@ -1,6 +1,5 @@
 package SynthesisPartialObservability;
 
-import SynthesisPartialObservability.Timer.DataContainer;
 import SynthesisPartialObservability.Timer.TimingHandler;
 import SynthesisPartialObservability.Utility.DoubleMurphyFormulas;
 import SynthesisPartialObservability.Utility.Utility;
@@ -8,8 +7,6 @@ import main.Main;
 import rationals.Automaton;
 import rationals.transformations.Mix;
 import rationals.transformations.Union;
-
-import java.util.List;
 
 /**
  * This class is used to generate a solution of the double murphy problem.
@@ -24,144 +21,96 @@ public class DoubleMurphyMainInterface {
 		timingHandler.add("Starting Time",StartingTime);
 		/**
 		 * LTLf formulas used to generate a game world are made like this:
-		 * init && ((exclusion && actions) || true) && objectives
-		 *      init is a simple formula
-		 *      exclusion is a simple formula like G(something)
-		 *      action is a set of formulas like G(X(something) -> X(somethingElse))
-		 *      objectives is a simple formula like F(something)
-		 * FLLOAT need to compute automaton separately:
-		 * 1 .Generate an automaton for init formulas
-		 * 2 .Generate an automaton for exclusion formulas
-		 * 3 .Generate an automaton for every actions formulas
-		 * 4 .Generate an automaton for true formula
-		 * 5 .Generate an automaton for objectives
-		 * 6 .Use class Reducer to reduce every automaton.
-		 * 7 .Use class Union to compute union between actions from (3).
-		 * 8 .Use class Mix to compute the intersection between actions and exclusions.
-		 * 9 .Use class Union to compute union between automaton from (8) e automaton from (4)
-		 * 10.Use class Mix to compute the intersection between automatons from (1), (9) and (5)
+		 * (G(regolemondo) && init && G(actions) && objectives) || !G(regolemondo)
+		 * 1. generate automa of rules (G(regolemondo))
+		 * 2. generate automa init
+		 * 3. generate automa G(actions)
+		 * 4. generate automa objectives
+		 * 5. generate automa !G(regolemondo) (negation of automa (1))
+		 * 6. use class Mix to intersect (1) with (2)
+		 * 7. use class Mix to intersect (6) with (3)
+		 * 8. use class Mix to intersect (7) with (4)
+		 * 9. use class Union to unify (8) with (5)
 		 * Solve the resulting automaton.
 		 * WARNING: use for every automaton the PropositionalSignature from class DoubleMurphyFormulas;
 		 *      it contains the right sign, with every proposition used in these formulas.
- 		 */
+		 */
 
 		DoubleMurphyFormulas formulas = new DoubleMurphyFormulas();
 
-		//Creation of the automaton with the initialization formula
-		Automaton initAutomaton = (Main.ltlfString2Aut(
+		Automaton rulesAutomaton = Main.ltlfString2Aut(
+				"G("+formulas.getRegolemondo()+")",
+				formulas.getSignature(),
+				false,  //declare
+				true,   //minimize
+				false,  //trim
+				true,   //noEmptyTrace
+				false   //printing
+		).getAutomaton();
+		Utility.printAutomaton(rulesAutomaton,"Automatons/rules automaton.gv");
+		Utility.printOptimizedAutomaton(rulesAutomaton,"Automatons/[OPT]rules automaton.gv");
+		Automaton initAutomaton = Main.ltlfString2Aut(
 				formulas.getInit(),
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
-				false,  //noEmptyTrace
+				true,   //noEmptyTrace
 				false   //printing
-		)).getAutomaton();
-		//initAutomaton = (new Reducer<>()).transform(initAutomaton);
-		Utility.printAutomaton(initAutomaton,"DoubleMurphy/initAutomaton.gv");
-		System.out.println("created: initAutomaton");
-		timingHandler.add("Init Automaton Creation",System.currentTimeMillis());
-
-		//Creation of the automaton with the exclusion formula
-		Automaton exclusionAutomaton = (Main.ltlfString2Aut(
-				formulas.getExclusions(),
+		).getAutomaton();
+		Utility.printAutomaton(initAutomaton,"Automatons/init automaton.gv");
+		Utility.printOptimizedAutomaton(initAutomaton,"Automatons/[OPT]init automaton.gv");
+		Automaton actionsAutomaton = Main.ltlfString2Aut(
+				"G("+formulas.getActions()+")",
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
-				false,  //noEmptyTrace
+				true,   //noEmptyTrace
 				false   //printing
-		)).getAutomaton();
-		//exclusionAutomaton = (new Reducer<>()).transform(exclusionAutomaton);
-		Utility.printAutomaton(exclusionAutomaton,"DoubleMurphy/exclusionAutomaton.gv");
-		System.out.println("created: exclusionAutomaton");
-		timingHandler.add("Exclusion Automaton Creation",System.currentTimeMillis());
-
-		//Creation of the automatons with the actions formulas
-		Automaton actionsAutomaton[] = new Automaton[formulas.getActions().size()];
-		for(int i = 0;i<formulas.getActions().size();i++){
-			actionsAutomaton[i] = (Main.ltlfString2Aut(
-					formulas.getActions().get(i),
-					formulas.getSignature(),
-					false,  //declare
-					true,   //minimize
-					false,  //trim
-					false,  //noEmptyTrace
-					false   //printing
-			)).getAutomaton();
-			//Utility.printAutomaton(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-AutomatonNoReduction.gv");
-			//actionsAutomaton[i] = (new Reducer<>()).transform(actionsAutomaton[i]);
-			Utility.printAutomaton(actionsAutomaton[i],"DoubleMurphy/actions-"+i+"-Automaton.gv");
-			System.out.println("created: actionsAutomaton["+i+"]");
-			timingHandler.add("Action["+i+"] Automaton Creation",System.currentTimeMillis());
-		}
-		timingHandler.add("Actions Automaton Completion",System.currentTimeMillis());
-
-		//Creation of the automaton with the "true" formula
-		Automaton trueAutomaton = (Main.ltlfString2Aut(
-				"true",
+		).getAutomaton();
+		Utility.printAutomaton(actionsAutomaton,"Automatons/actions automaton.gv");
+		Utility.printOptimizedAutomaton(actionsAutomaton,"Automatons/[OPT]actions automaton.gv");
+		Automaton objectivesAutomaton = Main.ltlfString2Aut(
+				formulas.getObjectives(),
 				formulas.getSignature(),
 				false,  //declare
 				true,   //minimize
 				false,  //trim
-				false,  //noEmptyTrace
+				true,   //noEmptyTrace
 				false   //printing
-		)).getAutomaton();
-		//trueAutomaton = (new Reducer<>()).transform(trueAutomaton);
-		Utility.printAutomaton(trueAutomaton,"DoubleMurphy/trueAutomaton.gv");
-		System.out.println("created: trueAutomaton");
-		timingHandler.add("True Automaton Creation",System.currentTimeMillis());
+		).getAutomaton();
+		Utility.printAutomaton(objectivesAutomaton,"Automatons/objectives automaton.gv");
+		Utility.printOptimizedAutomaton(objectivesAutomaton,"Automatons/[OPT]objectives automaton.gv");
+		Automaton negatedRulesAutomaton = Utility.negateAutomaton(rulesAutomaton);
+		Utility.printAutomaton(negatedRulesAutomaton,"Automatons/negated rules automaton.gv");
+		Utility.printOptimizedAutomaton(negatedRulesAutomaton,"Automatons/[OPT]negated rules automaton.gv");
 
-		//Creation of the automaton with the objectives formula
-		Automaton objectivesAutomaton = (Main.ltlfString2Aut(
-				formulas.getObjective(),
-				formulas.getSignature(),
-				false,  //declare
-				true,   //minimize
-				false,  //trim
-				false,  //noEmptyTrace
-				false   //printing
-		)).getAutomaton();
-		//objectivesAutomaton = (new Reducer<>()).transform(objectivesAutomaton);
-		Utility.printAutomaton(objectivesAutomaton,"DoubleMurphy/objectivesAutomaton.gv");
-		System.out.println("created: objectivesAutomaton");
-		timingHandler.add("Objectives Automaton Creation",System.currentTimeMillis());
+		Automaton sixAutomaton = (new Mix()).transform(rulesAutomaton,initAutomaton);
+		Utility.printAutomaton(sixAutomaton,"Automatons/first mix automaton.gv");
+		Utility.printOptimizedAutomaton(sixAutomaton,"Automatons/[OPT]first mix automaton.gv");
 
-		//Computing the union of the actions formulas.
-		Automaton unionActionsAutomaton = actionsAutomaton[0];
-		for (int i = 1;i<actionsAutomaton.length;i++)
-		Utility.printAutomaton(unionActionsAutomaton,"DoubleMurphy/unionActionsAutomaton.gv");
-		System.out.println("computed: unionActionsAutomaton");
-		timingHandler.add("Union of Actions Automaton Computation",System.currentTimeMillis());
+		Automaton sevenAutomaton = (new Mix()).transform(sixAutomaton,actionsAutomaton);
+		Utility.printAutomaton(sevenAutomaton,"Automatons/second mix automaton.gv");
+		Utility.printOptimizedAutomaton(sevenAutomaton,"Automatons/[OPT]second mix automaton.gv");
 
-		//Computing intersection between actions and exclusions.
-		Automaton mixedActionsExclusionsAutomaton = (new Mix<>()).transform(unionActionsAutomaton,exclusionAutomaton);
-		Utility.printAutomaton(mixedActionsExclusionsAutomaton,"DoubleMurphy/mixedActionsExsclusionsAutomaton.gv");
-		System.out.println("computed: mixedActionsExclusionsAutomaton");
-		timingHandler.add("Mixing between Action and Exclusion Automaton Computation",System.currentTimeMillis());
+		Automaton eigthAutomaton = (new Mix()).transform(sevenAutomaton,objectivesAutomaton);
+		Utility.printAutomaton(eigthAutomaton,"Automatons/third mix automaton.gv");
+		Utility.printOptimizedAutomaton(eigthAutomaton,"Automatons/[OPT]third mix automaton.gv");
 
-		//Computing "body part" of the formula (union of mixedActionsEsclusionsAutomaton and trueAutomaton)
-		Automaton bodyAutomaton = (new Union<>()).transform(mixedActionsExclusionsAutomaton,trueAutomaton);
-		Utility.printAutomaton(bodyAutomaton,"DoubleMurphy/bodyAutomaton.gv");
-		System.out.println("computed: bodyAutomaton");
-		timingHandler.add("Body Formulas Automaton Computation",System.currentTimeMillis());
+		Automaton completeAutomaton = (new Union<>()).transform(eigthAutomaton,negatedRulesAutomaton);
+		Utility.printAutomaton(completeAutomaton,"Automatons/complete automaton.gv");
+		Utility.printOptimizedAutomaton(completeAutomaton,"Automatons/[OPT]complete automaton.gv");
 
-		//Computing intersection (MIX) of initialization, body and objectives automaton
-		Automaton completeAutomaton = (new Mix<>()).transform(initAutomaton,bodyAutomaton);
-		completeAutomaton = (new Mix<>()).transform(completeAutomaton,objectivesAutomaton);
-		Utility.printAutomaton(completeAutomaton,"DoubleMurphy/completeAutomaton.gv");
-		System.out.println("computed: completeAutomaton");
-		timingHandler.add("Complete Automaton Computation",System.currentTimeMillis());
-
-		//Computation of the winning solution
 		SynthesisPartialObservability synthesis = new SynthesisPartialObservability(
 				completeAutomaton,
-				formulas.getDomain(),
-				true/*Print = true*/);
-		System.out.println("The Double Murphy problem "+(synthesis.solve()?"has":"hasn't")+" a always winning solution");
-		timingHandler.add("Solution Computation",System.currentTimeMillis());
+				formulas.getPropositionDomain(),
+				true/*print partial automaton*/);
+
+		System.out.println("Double Murphy problem "+(synthesis.solve()?"has":"hasn't")+" solution");
 
 
+		/*
 		//Summary of the timing.
 		System.out.println("\n\n\n---------------------------------  TIMING SUMMARY  -----------------------------------\n");
 		List<DataContainer> timers = timingHandler.get();
@@ -172,11 +121,8 @@ public class DoubleMurphyMainInterface {
 					"\t\tTime Elapsed(Seconds) : "+((int)(d.time-previousTime)/1000)+"\n"+
 					"\t\tTime Elapsed from beginning(Seconds) : "+((int)(d.time-StartingTime)/1000));
 			previousTime = d.time;
-		}
+		}*/
 	}
-
-
-
 
 	public static void main(String args[]){
 		new DoubleMurphyMainInterface();
